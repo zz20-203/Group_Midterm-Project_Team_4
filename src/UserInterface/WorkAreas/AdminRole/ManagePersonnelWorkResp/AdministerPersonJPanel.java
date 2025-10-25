@@ -6,6 +6,8 @@
 package UserInterface.WorkAreas.AdminRole.ManagePersonnelWorkResp;
 
 import Business.Business;
+import Business.UserAccounts.UserAccount;
+import UserInterface.WorkAreas.AdminRole.AdministerUserAccountsWorkResp.AdminUserAccount;
 
 import javax.swing.JPanel;
 
@@ -22,7 +24,7 @@ public class AdministerPersonJPanel extends javax.swing.JPanel {
 
     Business business;
 
-    public AdministerPersonJPanel(Business bz, JPanel jp) {
+    public AdministerPersonJPanel(Business bz, JPanel jp, UserAccount selecteduseraccount, AdminUserAccount aThis) {
 
         CardSequencePanel = jp;
         this.business = bz;
