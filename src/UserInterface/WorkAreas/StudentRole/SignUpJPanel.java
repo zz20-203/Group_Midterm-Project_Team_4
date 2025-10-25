@@ -31,19 +31,31 @@ public class SignUpJPanel extends javax.swing.JPanel {
         this.dept = dept;
     }
     
-    //helper: ensure the model-side student exists
+    //help to ensure the model-side student exists
     private info5100.university.example.Persona.StudentProfile ensureModelStudent(String personId) {
+        return ensureModelStudent(personId, null, null);
+    }
+
+    //overload that also stores first/last name in the info5100 model Person
+    private info5100.university.example.Persona.StudentProfile ensureModelStudent(
+            String personId, String first, String last) {
+
         info5100.university.example.Persona.PersonDirectory pd = dept.getPersonDirectory();
         info5100.university.example.Persona.Person mp = pd.findPerson(personId);
         if (mp == null) {
             mp = pd.newPerson(personId);
         }
+        // if names were provided, keep them in the model person
+        if (first != null && !first.isEmpty()) mp.setFirstName(first);
+        if (last  != null && !last.isEmpty())  mp.setLastName(last);
+
         info5100.university.example.Persona.StudentDirectory sd = dept.getStudentDirectory();
         info5100.university.example.Persona.StudentProfile sp = sd.findStudent(personId);
         if (sp == null) {
             sp = sd.newStudentProfile(mp);
         }
         return sp;
+    
     }
  
 
@@ -226,8 +238,8 @@ public class SignUpJPanel extends javax.swing.JPanel {
     // 2) Username uniqueness check (your API)
     UserAccountDirectory uad = business.getUserAccountDirectory();
     boolean exists = false;
-    for (UserAccount ua : uad.getUserAccountList()) {              // <- exact method name
-        if (ua.getUserLoginName().equals(username)) {               // <- exact method name
+    for (UserAccount ua : uad.getUserAccountList()) {         
+        if (ua.getUserLoginName().equals(username)) {          
             exists = true; break;
         }
     }
@@ -241,7 +253,7 @@ public class SignUpJPanel extends javax.swing.JPanel {
     uad.newUserAccount(sp, username, pwd);                          // <- order matches your API
 
     // 4) Model mirror (Digital University Model)
-    ensureModelStudent(nuid);
+    ensureModelStudent(nuid, txtFirstName.getText().trim(), txtLastName.getText().trim());
 
     JOptionPane.showMessageDialog(this, "Account created! Please log in.");
     goBackToLogin(); // back to login
@@ -249,7 +261,13 @@ public class SignUpJPanel extends javax.swing.JPanel {
         }
 
     private void goBackToLogin() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
+        java.awt.Container top = mainWorkArea.getTopLevelAncestor();
+            if (top instanceof ProfileWorkAreaMainFrame) {
+                ((ProfileWorkAreaMainFrame) top).clearLoginFields();
+            }
+            CardLayout cl = (CardLayout) mainWorkArea.getLayout();
+            cl.show(mainWorkArea,"HOME");
     }
     }
         
