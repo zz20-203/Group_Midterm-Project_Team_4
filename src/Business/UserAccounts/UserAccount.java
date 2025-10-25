@@ -20,9 +20,43 @@ public class UserAccount {
     String username;
     String password;
     LocalDateTime lastAccessed;
+    LocalDateTime lastUpdated;
+    String status = "Active"; 
 
-    public LocalDateTime getLastAccessed() {
-        return lastAccessed;
+
+    public UserAccount (Profile profile, String un, String pw){
+        username = un;
+         password = pw;
+         this.profile = profile;
+         this.lastUpdated = LocalDateTime.now();
+    }
+
+    public String getPersonId(){
+        return profile.getPerson().getPersonId();
+    }
+    public String getUserLoginName(){
+        return username;
+    }
+
+    public boolean isMatch(String id){
+    if(getPersonId().equals(id)) return true;
+    return false;
+    }
+    public boolean IsValidUser(String un, String pw){
+
+        if (username.equalsIgnoreCase(un) && password.equals(pw)) return true;
+        else return false;
+
+    }
+    public String getRole(){
+        return profile.getRole();
+    }
+
+    public Profile getAssociatedPersonProfile(){
+        return profile;
+    }
+        public LocalDateTime getLastAccessed() {
+    return lastAccessed;
     }
 
     public void setLastAccessed(LocalDateTime lastAccessed) {
@@ -44,40 +78,32 @@ public class UserAccount {
     public void setStatus(String status) {
         this.status = status;
     }
-    LocalDateTime lastUpdated;
-    String status = "Active"; 
-    
-    public UserAccount (Profile profile, String un, String pw){
-        username = un;
-         password = pw;
-         this.profile = profile;
-         this.lastUpdated = LocalDateTime.now();
+
+    public Profile getProfile() {
+        return profile;
     }
 
-    public String getPersonId(){
-        return profile.getPerson().getPersonId();
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
-    public String getUserLoginName(){
+
+    public String getUsername() {
         return username;
     }
 
-        public boolean isMatch(String id){
-        if(getPersonId().equals(id)) return true;
-        return false;
+    public void setUsername(String username) {
+        this.username = username;
     }
-        public boolean IsValidUser(String un, String pw){
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
         
-            if (username.equalsIgnoreCase(un) && password.equals(pw)) return true;
-            else return false;
         
-        }
-        public String getRole(){
-            return profile.getRole();
-        }
-        
-        public Profile getAssociatedPersonProfile(){
-            return profile;
-        }
         
     @Override
         public String toString(){

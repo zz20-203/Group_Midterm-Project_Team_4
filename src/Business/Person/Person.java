@@ -57,6 +57,13 @@ public class Person {
         }
         return false;
     }
+    
+    public String getName() {
+    String first = (firstName != null) ? firstName : "";
+    String last = (lastName != null) ? lastName : "";
+    String fullName = (first + " " + last).trim(); //
+    return fullName.isEmpty() ? "N/A" : fullName;
+}
 
     @Override
     public String toString() {
