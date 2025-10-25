@@ -71,9 +71,7 @@ public class SignUpJPanel extends javax.swing.JPanel {
         lblUsername = new javax.swing.JLabel();
         txtUsername = new javax.swing.JTextField();
         lblUsername1 = new javax.swing.JLabel();
-        txtPassword = new javax.swing.JTextField();
         lblConfirmPassword = new javax.swing.JLabel();
-        txtConfirm = new javax.swing.JTextField();
         btnCreate = new javax.swing.JButton();
         lblFirstName = new javax.swing.JLabel();
         lblTitle = new javax.swing.JLabel();
@@ -82,6 +80,8 @@ public class SignUpJPanel extends javax.swing.JPanel {
         lblLastName = new javax.swing.JLabel();
         txtNuid = new javax.swing.JTextField();
         txtLastName = new javax.swing.JTextField();
+        txtPassword = new javax.swing.JPasswordField();
+        txtConfirm = new javax.swing.JPasswordField();
 
         setPreferredSize(new java.awt.Dimension(850, 500));
 
@@ -129,12 +129,12 @@ public class SignUpJPanel extends javax.swing.JPanel {
                             .addComponent(lblFirstName)
                             .addComponent(lblLastName))
                         .addGap(30, 30, 30)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtNuid, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                            .addComponent(txtNuid, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                            .addComponent(txtFirstName, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                            .addComponent(txtPassword)
+                            .addComponent(txtConfirm))))
                 .addGap(516, 516, 516))
             .addGroup(layout.createSequentialGroup()
                 .addGap(211, 211, 211)
@@ -190,11 +190,11 @@ public class SignUpJPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblUsername;
     private javax.swing.JLabel lblUsername1;
-    private javax.swing.JTextField txtConfirm;
+    private javax.swing.JPasswordField txtConfirm;
     private javax.swing.JTextField txtFirstName;
     private javax.swing.JTextField txtLastName;
     private javax.swing.JTextField txtNuid;
-    private javax.swing.JTextField txtPassword;
+    private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 

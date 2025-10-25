@@ -42,12 +42,12 @@
                           <Component id="lblLastName" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txtUsername" alignment="0" min="-2" pref="225" max="-2" attributes="0"/>
-                          <Component id="txtNuid" alignment="0" min="-2" pref="225" max="-2" attributes="0"/>
-                          <Component id="txtPassword" alignment="0" min="-2" pref="225" max="-2" attributes="0"/>
-                          <Component id="txtConfirm" alignment="0" min="-2" pref="225" max="-2" attributes="0"/>
-                          <Component id="txtFirstName" alignment="0" min="-2" pref="225" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="txtUsername" alignment="0" pref="225" max="32767" attributes="0"/>
+                          <Component id="txtNuid" alignment="0" pref="225" max="32767" attributes="0"/>
+                          <Component id="txtFirstName" alignment="0" pref="225" max="32767" attributes="0"/>
+                          <Component id="txtPassword" alignment="0" max="32767" attributes="0"/>
+                          <Component id="txtConfirm" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -115,14 +115,10 @@
         <Property name="text" type="java.lang.String" value="Password"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="txtPassword">
-    </Component>
     <Component class="javax.swing.JLabel" name="lblConfirmPassword">
       <Properties>
         <Property name="text" type="java.lang.String" value="Confirm Password"/>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="txtConfirm">
     </Component>
     <Component class="javax.swing.JButton" name="btnCreate">
       <Properties>
@@ -160,6 +156,10 @@
     <Component class="javax.swing.JTextField" name="txtNuid">
     </Component>
     <Component class="javax.swing.JTextField" name="txtLastName">
+    </Component>
+    <Component class="javax.swing.JPasswordField" name="txtPassword">
+    </Component>
+    <Component class="javax.swing.JPasswordField" name="txtConfirm">
     </Component>
   </SubComponents>
 </Form>
