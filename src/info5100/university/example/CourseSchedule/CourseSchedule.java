@@ -1,18 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package info5100.university.example.CourseSchedule;
 
 import info5100.university.example.CourseCatalog.Course;
 import info5100.university.example.CourseCatalog.CourseCatalog;
 import java.util.ArrayList;
 
-/**
- *
- * @author kal bugrara
- */
 public class CourseSchedule {
 
     CourseCatalog coursecatalog;
@@ -57,5 +49,14 @@ public class CourseSchedule {
         }
         return sum;
     }
+    
+    public java.util.List<CourseOffer> getCourseOfferList() {   
+        return schedule;
+    }
+
+    public CourseOffer getCourseOffer(String number) {
+        return getCourseOfferByNumber(number); 
+    }
+
 
 }

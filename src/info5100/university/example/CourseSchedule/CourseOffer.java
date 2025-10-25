@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package info5100.university.example.CourseSchedule;
 
 import info5100.university.example.CourseCatalog.Course;
@@ -10,10 +6,6 @@ import info5100.university.example.Persona.Faculty.FacultyAssignment;
 import info5100.university.example.Persona.Faculty.FacultyProfile;
 import java.util.ArrayList;
 
-/**
- *
- * @author kal bugrara
- */
 public class CourseOffer {
 
     Course course;
@@ -35,7 +27,7 @@ public class CourseOffer {
     }
 
     public String getCourseNumber() {
-        return course.getCOurseNumber();
+        return course.getCourseNumber();
     }
 
     public void generatSeats(int n) {
@@ -47,6 +39,13 @@ public class CourseOffer {
         }
 
     }
+    //how many seats are still empty
+    public int getEmptySeatCount() {
+        int c = 0;
+        for (Seat s : seatlist) if (!s.isOccupied()) c++;
+        return c;
+    }
+    
 
     public Seat getEmptySeat() {
 
@@ -83,11 +82,22 @@ public class CourseOffer {
         }
         return sum;
     }
+    
+    public Course getCourse() {
+        return course; 
+    }
+    
     public Course getSubjectCourse(){
         return course;
     }
+    
     public int getCreditHours(){
         return course.getCredits();
     }
+    
+    public java.util.List<Seat> getSeatList() { 
+        return seatlist; 
+}        
+    
 
 }

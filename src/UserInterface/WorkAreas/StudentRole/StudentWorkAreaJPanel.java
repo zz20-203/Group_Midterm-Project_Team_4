@@ -1,28 +1,19 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
- /*
- * WorkAreaJPanel.java
- *
- * Created on May 17, 2020, 8:35:29 AM
- */
 package UserInterface.WorkAreas.StudentRole;
 
-import Business.Business;
-import Business.Profiles.StudentProfile;
+import info5100.university.example.Persona.Person;
+import info5100.university.example.Persona.PersonDirectory;
+import info5100.university.example.Persona.StudentDirectory;
+import info5100.university.example.Persona.StudentProfile;
+import info5100.university.example.Department.Department;
 import javax.swing.JPanel;
+import java.awt.CardLayout;
 
-/**
- *
- * @author kal
- */
 public class StudentWorkAreaJPanel extends javax.swing.JPanel {
 
-    javax.swing.JPanel CardSequencePanel;
-    Business business;
-    StudentProfile student;
+    private final JPanel workArea; 
+    private final Department dept; 
+    private final String personId;  
 
     /**
      * Creates new form UnitRiskWorkArea
@@ -31,12 +22,11 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
      * @param clp
      */
 
-    public StudentWorkAreaJPanel(Business b, StudentProfile spp, JPanel clp) {
-
-        business = b;
-        this.CardSequencePanel = clp;
-        student = spp;
+    public StudentWorkAreaJPanel(JPanel workArea, String personId, Department dept)) {
         initComponents();
+        this.workArea = workArea;
+        this.dept = dept;
+        this.personId = personId;
 
     }
 
@@ -176,6 +166,10 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         // TODO add your handling code here:
+        String name = "StudentMyProfile";
+        StudentMyProfileJPanel panel = new StudentMyProfileJPanel(student, workArea, dept);
+        workArea.add(name, panel);
+        ((CardLayout) workArea.getLayout()).show(workArea, name);
 
 
 
@@ -189,8 +183,10 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         // TODO add your handling code here:
+        StudentRegistrationJPanel p = new StudentRegistrationJPanel(workArea, dept, personId);
+        workArea.add("studentReg", p);
+        ((CardLayout) workArea.getLayout()).show(workArea, "studentReg");
 
-        CardSequencePanel.removeAll();
 }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed

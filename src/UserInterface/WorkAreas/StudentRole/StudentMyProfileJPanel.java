@@ -43,7 +43,7 @@ public class StudentMyProfileJPanel extends javax.swing.JPanel {
             }
         }
         txtDept.setText(deptName);
-
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
