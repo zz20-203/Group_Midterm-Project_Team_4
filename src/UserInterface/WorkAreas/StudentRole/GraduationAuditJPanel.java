@@ -1,20 +1,57 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
+
 package UserInterface.WorkAreas.StudentRole;
+
+import info5100.university.example.Persona.Person;
+import info5100.university.example.Persona.PersonDirectory;
+import info5100.university.example.Persona.StudentDirectory;
+import info5100.university.example.Persona.StudentProfile;
+import info5100.university.example.CourseSchedule.CourseLoad;
+import info5100.university.example.CourseSchedule.CourseOffer;
+import info5100.university.example.CourseSchedule.SeatAssignment;
+import info5100.university.example.Department.Department;
+import info5100.university.example.CourseCatalog.Course;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.CardLayout;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  *
  * @author shaoweili
  */
 public class GraduationAuditJPanel extends javax.swing.JPanel {
+    private final JPanel main;         // parent CardLayout
+    private final Department dept;     // model department
+    private final String personId;     // NUID/person id on the model side
 
-    /**
-     * Creates new form GraduationAuditJPanel
-     */
-    public GraduationAuditJPanel() {
+    private static final int REQUIRED_CREDITS_DEFAULT = 32;
+    private static final String[] KNOWN_SEMESTERS = {"Fall2025", "Spring2026"};
+    
+    public GraduationAuditJPanel(JPanel main, Department dept, String personId) {
+        this.main = main;
+        this.dept = dept;
+        this.personId = personId;
         initComponents();
+        
+        // read-only fields
+        txtDeptName.setEditable(false);
+        txtRequiredCredits.setEditable(false);
+        txtEarnedCredits.setEditable(false);
+        txtGpa.setEditable(false);
+        
+        // table setup (semesters with grade and credits)
+        tblCourseGrade.setModel(new DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Semester", "Credits", "Grade", "Status"}
+        ) {
+            @Override public boolean isCellEditable(int r, int c) { return false; }
+        });
+
+        // populate UI
+        loadAudit();
+
     }
 
     /**
@@ -26,19 +63,290 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        lblGradAudit = new javax.swing.JLabel();
+        btnBack = new javax.swing.JButton();
+        lblRequiredCredits = new javax.swing.JLabel();
+        lblEarnedCredits = new javax.swing.JLabel();
+        lblGpa = new javax.swing.JLabel();
+        lblProgress = new javax.swing.JLabel();
+        pbCreditsProgress = new javax.swing.JProgressBar();
+        txtRequiredCredits = new javax.swing.JTextField();
+        txtEarnedCredits = new javax.swing.JTextField();
+        txtGpa = new javax.swing.JTextField();
+        lblDeptName = new javax.swing.JLabel();
+        txtDeptName = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblCourseGrade = new javax.swing.JTable();
+        btnSeeDetails = new javax.swing.JButton();
+
+        lblGradAudit.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
+        lblGradAudit.setText("Perform Graduation Audit");
+
+        btnBack.setText("<< Back");
+        btnBack.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+
+        lblRequiredCredits.setText("Required credits");
+
+        lblEarnedCredits.setText("Earned credits");
+
+        lblGpa.setText("Current GPA");
+
+        lblProgress.setText("Progress");
+
+        lblDeptName.setText("Program/Department");
+
+        tblCourseGrade.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Semester", "Credits", "Grade", "Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tblCourseGrade);
+
+        btnSeeDetails.setText("See details");
+        btnSeeDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSeeDetailsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 850, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(46, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(201, 201, 201)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblEarnedCredits)
+                            .addComponent(lblRequiredCredits)
+                            .addComponent(lblGpa)
+                            .addComponent(lblDeptName))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblGradAudit)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txtGpa, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtEarnedCredits, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtRequiredCredits, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtDeptName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 348, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(lblProgress)
+                        .addGap(18, 18, 18)
+                        .addComponent(pbCreditsProgress, javax.swing.GroupLayout.PREFERRED_SIZE, 782, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(btnBack)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnSeeDetails))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 867, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(42, 42, 42))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 550, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(43, 43, 43)
+                .addComponent(lblGradAudit)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblDeptName)
+                    .addComponent(txtDeptName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRequiredCredits)
+                    .addComponent(txtRequiredCredits, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEarnedCredits)
+                    .addComponent(txtEarnedCredits, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblGpa)
+                    .addComponent(txtGpa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pbCreditsProgress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblProgress))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSeeDetails)
+                    .addComponent(btnBack))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        if (main != null) {
+            ((CardLayout) main.getLayout()).previous(main);
+        }
 
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnSeeDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeeDetailsActionPerformed
+        // TODO add your handling code here:
+        int row = tblCourseGrade.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Select a semester first.");
+            return;
+        }
+        String semester = String.valueOf(tblCourseGrade.getValueAt(row, 0));
+
+        // Navigate to TranscriptJPanel (create this constructor)
+        TranscriptJPanel tp = new TranscriptJPanel(main, dept, personId, semester);
+        main.add("transcript:" + semester, tp);
+        ((CardLayout) main.getLayout()).show(main, "transcript:" + semester);
+    }//GEN-LAST:event_btnSeeDetailsActionPerformed
+
+  
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnSeeDetails;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblDeptName;
+    private javax.swing.JLabel lblEarnedCredits;
+    private javax.swing.JLabel lblGpa;
+    private javax.swing.JLabel lblGradAudit;
+    private javax.swing.JLabel lblProgress;
+    private javax.swing.JLabel lblRequiredCredits;
+    private javax.swing.JProgressBar pbCreditsProgress;
+    private javax.swing.JTable tblCourseGrade;
+    private javax.swing.JTextField txtDeptName;
+    private javax.swing.JTextField txtEarnedCredits;
+    private javax.swing.JTextField txtGpa;
+    private javax.swing.JTextField txtRequiredCredits;
     // End of variables declaration//GEN-END:variables
+
+    private void loadAudit() {
+        StudentProfile sp = getOrCreateStudent();
+        // dept/program name (fall back to toString if method name differs)
+        txtDeptName.setText(safeDeptName(dept));
+
+        // credits & GPA
+        int required = REQUIRED_CREDITS_DEFAULT;
+        int earned = 0;
+        double gpaSum = 0.0;
+        int gradedCredits = 0;
+
+        // table rows by semester
+        DefaultTableModel m = (DefaultTableModel) tblCourseGrade.getModel();
+        m.setRowCount(0);
+
+        for (String sem : KNOWN_SEMESTERS) {
+            CourseLoad cl = sp.getCourseLoadBySemester(sem);
+            if (cl == null) continue;
+
+            int semCredits = 0;
+            boolean allGraded = true;
+
+            for (SeatAssignment sa : cl.getSeatAssignments()) {
+                CourseOffer co = sa.getCourseOffer();
+                Course course = co.getSubjectCourse();
+                int cr = safeCredits(course);
+                semCredits += cr;
+                earned += cr;
+
+                String letter = safeGrade(sa);
+                if (letter == null || letter.isBlank()) {
+                    allGraded = false;
+                } else {
+                    double points = letterToPoints(letter);
+                    if (points >= 0) {
+                        gpaSum += points * cr;
+                        gradedCredits += cr;
+                    }
+                }
+            }
+            String overallGrade = (gradedCredits == 0 ? "-" : "—"); // use the accumulatave score for the semester grade
+            String status = allGraded ? "Completed" : "In progress";
+            m.addRow(new Object[]{sem, semCredits, overallGrade, status});
+        }
+        
+        txtRequiredCredits.setText(String.valueOf(required));
+        txtEarnedCredits.setText(String.valueOf(earned));
+        
+        //set up the progress bar to see the required and earned comparison
+        pbCreditsProgress.setMaximum(required);
+        pbCreditsProgress.setValue(Math.min(required, earned));
+        pbCreditsProgress.setStringPainted(true);
+        pbCreditsProgress.setString(earned + " / " + required + " credits");
+        
+        // Current GPA - accumulative GPA fro all semesters the student has taken
+        String gpaStr = (gradedCredits == 0) ? "-" : String.format("%.2f", gpaSum / gradedCredits);
+        txtGpa.setText(gpaStr);
+    }
+
+    private StudentProfile getOrCreateStudent() {
+        PersonDirectory pd = dept.getPersonDirectory();
+        Person mp = pd.findPerson(personId);
+        if (mp == null) mp = pd.newPerson(personId);
+        StudentDirectory sd = dept.getStudentDirectory();
+        StudentProfile sp = sd.findStudent(personId);
+        if (sp == null) sp = sd.newStudentProfile(mp);
+        return sp;
+    }
+
+    private String safeDeptName(Department dept) {
+        try {
+            Method m = dept.getClass().getMethod("getName");
+            Object v = m.invoke(dept);
+            return v == null ? "" : v.toString();
+        } catch (Exception ignored) { }
+        return dept.toString();
+    }
+
+    private String safeGrade(SeatAssignment sa) {
+        //use SeatAssignment getGrade() and returns a letter like "A", "B+" … or null.
+        try {
+            Object v = sa.getClass().getMethod("getGrade").invoke(sa);
+            return v == null ? null : v.toString();
+        } catch (Exception ignored) { }
+        return null;
+    }
+
+    private double letterToPoints(String letter) {
+        switch (letter) {
+            case "A": return 4.0;
+            case "A-": return 3.7;
+            case "B+": return 3.3;
+            case "B": return 3.0;
+            case "B-": return 2.7;
+            case "C+": return 2.3;
+            case "C": return 2.0;
+            case "C-": return 1.7;
+            case "D": return 1.0;
+            case "F": return 0.0;
+            default:   return 0.0;  // grade like IP, W, null, etc.
+        
+    }
+        
 }
+    //use the course's credits
+    private int safeCredits(info5100.university.example.CourseCatalog.Course c) {
+        if (c == null) return 0;
+        return c.getCredits(); 
+    }
+    }
