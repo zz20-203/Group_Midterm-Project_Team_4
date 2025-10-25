@@ -5,8 +5,12 @@
  */
 package UserInterface.WorkAreas.AdminRole.AdministerUserAccountsWorkResp;
 
+import Business.Business;
 import Business.UserAccounts.UserAccount;
+import UserInterface.WorkAreas.AdminRole.ManagePersonnelWorkResp.AdministerPersonJPanel;
+import java.awt.CardLayout;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 
 /**
  *h
@@ -18,18 +22,39 @@ public class AdminUserAccount extends javax.swing.JPanel {
     /**
      * Creates new form ManageSuppliersJPanel
      */
-    JPanel CardSequencePanel;
 
-    UserAccount selecteduseraccount;
+        JPanel CardSequencePanel;
+        ManageUserAccountsJPanel parentPanel;
+        UserAccount selecteduseraccount;
+        Business business;
 
-    public AdminUserAccount(UserAccount sua, JPanel jp) {
-
-        CardSequencePanel = jp;
-        selecteduseraccount= sua;
+    public AdminUserAccount(Business bz, UserAccount ua, JPanel jp, ManageUserAccountsJPanel parent) {
+        this.business = bz;
+        this.selecteduseraccount = ua;
+        this.CardSequencePanel = jp;
+        this.parentPanel = parent;
         initComponents();
-        //display user details here
+        populateFields();
 
     }
+
+    private void populateFields() {
+        jTextField2.setText(selecteduseraccount.getUserLoginName());
+        cmbStatus.setSelectedItem(selecteduseraccount.getStatus());
+        jTextField4.setText(
+            selecteduseraccount.getLastAccessed() == null ? "N/A" : selecteduseraccount.getLastAccessed().toString()
+        );
+        jTextField1.setText(
+            selecteduseraccount.getLastUpdated() == null ? "N/A" : selecteduseraccount.getLastUpdated().toString()
+        );
+   
+    }
+    
+    public void refreshUI() {
+    populateFields();
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -40,26 +65,34 @@ public class AdminUserAccount extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        Back = new javax.swing.JButton();
+        Update = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         Back1 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        jTextField4 = new javax.swing.JTextField();
+        cmbStatus = new javax.swing.JComboBox<>();
 
         setBackground(new java.awt.Color(0, 153, 153));
         setLayout(null);
 
-        Back.setText("Update>>");
-        Back.addActionListener(new java.awt.event.ActionListener() {
+        Update.setText("Update>>");
+        Update.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BackActionPerformed(evt);
+                UpdateActionPerformed(evt);
             }
         });
-        add(Back);
-        Back.setBounds(480, 290, 100, 32);
+        add(Update);
+        Update.setBounds(480, 290, 100, 23);
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jLabel2.setText("Administer User Account");
         add(jLabel2);
-        jLabel2.setBounds(21, 20, 550, 29);
+        jLabel2.setBounds(21, 20, 550, 28);
 
         Back1.setText("<< Back");
         Back1.addActionListener(new java.awt.event.ActionListener() {
@@ -68,30 +101,110 @@ public class AdminUserAccount extends javax.swing.JPanel {
             }
         });
         add(Back1);
-        Back1.setBounds(40, 290, 100, 32);
+        Back1.setBounds(40, 290, 100, 23);
+
+        jLabel4.setText("User Name");
+        add(jLabel4);
+        jLabel4.setBounds(150, 110, 66, 17);
+
+        jLabel5.setText("Last Updated");
+        add(jLabel5);
+        jLabel5.setBounds(140, 230, 78, 17);
+
+        jLabel3.setText("Status");
+        add(jLabel3);
+        jLabel3.setBounds(180, 150, 40, 17);
+
+        jLabel7.setText("Last Activity");
+        add(jLabel7);
+        jLabel7.setBounds(150, 190, 80, 17);
+
+        jTextField1.setEnabled(false);
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+        add(jTextField1);
+        jTextField1.setBounds(250, 230, 190, 23);
+
+        jTextField2.setEnabled(false);
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+        add(jTextField2);
+        jTextField2.setBounds(250, 110, 190, 23);
+
+        jTextField4.setEnabled(false);
+        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField4ActionPerformed(evt);
+            }
+        });
+        add(jTextField4);
+        jTextField4.setBounds(250, 190, 190, 23);
+
+        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Active", "Pending", "Inactive" }));
+        cmbStatus.setEnabled(false);
+        add(cmbStatus);
+        cmbStatus.setBounds(250, 150, 190, 23);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
+    private void UpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateActionPerformed
         // TODO add your handling code here:
+        
+        AdministerPersonJPanel panel = new AdministerPersonJPanel(
+                business,
+                CardSequencePanel,
+                selecteduseraccount,   
+                this           
+        );
 
-        CardSequencePanel.remove(this);
-        ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
-
-    }//GEN-LAST:event_BackActionPerformed
+        CardSequencePanel.add("AdministerPersonJPanel", panel);
+        CardLayout layout = (CardLayout) CardSequencePanel.getLayout();
+        layout.next(CardSequencePanel);
+    
+    }//GEN-LAST:event_UpdateActionPerformed
 
     private void Back1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Back1ActionPerformed
         // TODO add your handling code here:
-         CardSequencePanel.remove(this);
-        ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
+        CardSequencePanel.remove(this);
+        CardLayout layout = (CardLayout) CardSequencePanel.getLayout();
+        layout.previous(CardSequencePanel);
 
+        if (parentPanel != null) {
+            javax.swing.SwingUtilities.invokeLater(() -> parentPanel.refreshTable());
+        }
 
     }//GEN-LAST:event_Back1ActionPerformed
 
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField4ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Back;
     private javax.swing.JButton Back1;
+    private javax.swing.JButton Update;
+    private javax.swing.JComboBox<String> cmbStatus;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField4;
     // End of variables declaration//GEN-END:variables
 
 }

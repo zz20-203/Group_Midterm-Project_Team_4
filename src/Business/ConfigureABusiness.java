@@ -11,6 +11,8 @@ import Business.UserAccounts.UserAccount;
 import Business.UserAccounts.UserAccountDirectory;
 
 
+
+
 /**
  *
  * @author kal bugrara
@@ -47,7 +49,10 @@ class ConfigureABusiness {
         UserAccountDirectory uadirectory = business.getUserAccountDirectory();
         UserAccount ua3 = uadirectory.newUserAccount(employeeprofile0, "admin", "****"); /// order products for one of the customers and performed by a sales person
         UserAccount ua4 = uadirectory.newUserAccount(studentprofile0, "adam", "****"); /// order products for one of the customers and performed by a sales person
-
+        UserAccount ua5 = uadirectory.newUserAccount(studentprofile0, "faculty", "****");
         return business;
+        
+    
+    
     }
 }
