@@ -161,7 +161,10 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCourseWorkIdentifyResourceAssetsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCourseWorkIdentifyResourceAssetsActionPerformed
-        
+        String name = "CourseWork";
+        CourseWorkJPanel panel = new CourseWorkJPanel(workArea, dept, personId);
+        workArea.add(name, panel);
+        ((java.awt.CardLayout) workArea.getLayout()).show(workArea, name);
 
     }//GEN-LAST:event_btnCourseWorkIdentifyResourceAssetsActionPerformed
 

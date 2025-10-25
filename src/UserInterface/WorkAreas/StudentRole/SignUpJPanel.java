@@ -256,7 +256,7 @@ public class SignUpJPanel extends javax.swing.JPanel {
     ensureModelStudent(nuid, txtFirstName.getText().trim(), txtLastName.getText().trim());
 
     JOptionPane.showMessageDialog(this, "Account created! Please log in.");
-    goBackToLogin(); // back to login
+    goBackToLogin();
         
         }
 

@@ -38,6 +38,7 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
 
     public ProfileWorkAreaMainFrame() {
         initComponents();
+        CardSequencePanel.setLayout(new java.awt.CardLayout());
         business = ConfigureABusiness.initialize();
         
         dept = new Department("Information System");
