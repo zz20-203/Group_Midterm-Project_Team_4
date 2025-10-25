@@ -1,18 +1,17 @@
 
 package UserInterface.WorkAreas.StudentRole;
+
 import info5100.university.example.Department.Department;
-import info5100.university.example.Persona.Person;
-import info5100.university.example.Persona.PersonDirectory;
-import info5100.university.example.Persona.StudentDirectory;
 import info5100.university.example.Persona.StudentProfile;
 import info5100.university.example.CourseSchedule.CourseLoad;
 import info5100.university.example.CourseSchedule.SeatAssignment;
+import info5100.university.example.CourseSchedule.CourseOffer;
 import info5100.university.example.CourseCatalog.Course;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.LinkedHashSet;
+import java.awt.CardLayout;
+
 
 /**
  *
@@ -22,13 +21,27 @@ public class TranscriptJPanel extends javax.swing.JPanel {
     private final JPanel main;
     private final Department dept;
     private final String personId;
-    private final String initialSemester;
+    private String semester;  
 
     /**
      * Creates new form TranscriptJPanel
      */
-    public TranscriptJPanel() {
+    public TranscriptJPanel(JPanel main, Department dept, String personId, String semester) {
+        this.main = main;
+        this.dept = dept;
+        this.personId = personId;
+        this.semester = semester;
+        
         initComponents();
+        
+        txtCurrentGpa.setEditable(false);
+        
+        // show just the chosen semester
+        cmbSemester.removeAllItems();
+        if (semester != null) cmbSemester.addItem(semester);
+        if (cmbSemester.getItemCount() > 0) cmbSemester.setSelectedIndex(0);
+
+        loadTable();
     }
 
     /**
@@ -80,6 +93,11 @@ public class TranscriptJPanel extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tblTranscript);
 
         btnBack.setText("<< Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         lblGpa.setText("GPA");
 
@@ -136,6 +154,12 @@ public class TranscriptJPanel extends javax.swing.JPanel {
         loadTable();
     }//GEN-LAST:event_cmbSemesterActionPerformed
 
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        ((CardLayout) main.getLayout()).previous(main);
+        
+    }//GEN-LAST:event_btnBackActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
@@ -147,4 +171,61 @@ public class TranscriptJPanel extends javax.swing.JPanel {
     private javax.swing.JTable tblTranscript;
     private javax.swing.JTextField txtCurrentGpa;
     // End of variables declaration//GEN-END:variables
+
+    private void loadTable() {
+        /// Table and GPA for the selected semester
+        String sem = (String) cmbSemester.getSelectedItem();
+        if (sem == null || dept == null) return;
+
+        StudentProfile sp = dept.getStudentDirectory().findStudent(personId);
+        if (sp == null) return;
+
+        CourseLoad cl = sp.getCourseLoadBySemester(sem);
+        DefaultTableModel m = (DefaultTableModel) tblTranscript.getModel();
+        m.setRowCount(0);
+
+        if (cl == null) { txtCurrentGpa.setText("-"); return; }
+
+        double gpSum = 0.0;
+        int gradedCredits = 0;
+
+        for (SeatAssignment sa : cl.getSeatAssignments()) {
+            CourseOffer co = sa.getCourseOffer();
+            Course c = (co == null) ? null : co.getSubjectCourse();
+            int credits = safeCredits(c);
+
+            String grade = "-";
+            try { grade = String.valueOf(sa.getClass().getMethod("getGrade").invoke(sa)); }
+            catch (Exception ignore) { }
+
+            String courseName = (c == null) ? "(unknown)" : (c.getName() + " (" + c.getCourseNumber() + ")");
+            m.addRow(new Object[]{ courseName, credits, grade });
+
+            double pts = letterToPoints(grade);
+            if (pts >= 0) { gpSum += pts * credits; gradedCredits += credits; }
+        }
+
+        txtCurrentGpa.setText(gradedCredits == 0 ? "-" : String.format("%.2f", gpSum / gradedCredits));
+    }
+
+    private int safeCredits(Course c) {return c == null ? 0 : c.getCredits();}
+
+    private double letterToPoints(String grade) {
+        if (grade == null) return 0.0;
+        switch (grade.trim().toUpperCase()) {
+            case "A":  return 4.0;
+            case "A-": return 3.7;
+            case "B+": return 3.3;
+            case "B":  return 3.0;
+            case "B-": return 2.7;
+            case "C+": return 2.3;
+            case "C":  return 2.0;
+            case "C-": return 1.7;
+            case "D":  return 1.0;
+            case "F":  return 0.0;
+            default:   return 0.0; 
+        
+    }   
+        
+    }
 }

@@ -100,7 +100,7 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
         btnReload = new javax.swing.JButton();
         spnProgress = new javax.swing.JSpinner();
         btnBack = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        lblManageCourseWork = new javax.swing.JLabel();
 
         lblSemester.setText("Semester");
 
@@ -164,8 +164,8 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
-        jLabel1.setText("Manage Course Work");
+        lblManageCourseWork.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
+        lblManageCourseWork.setText("Manage Course Work");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -187,13 +187,13 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(lblSemester, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(cmbSemester, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cmbSemester, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 767, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(330, 330, 330)
-                        .addComponent(jLabel1)))
+                        .addComponent(lblManageCourseWork)))
                 .addContainerGap(51, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -205,7 +205,7 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
                     .addComponent(cmbSemester, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBack))
                 .addGap(35, 35, 35)
-                .addComponent(jLabel1)
+                .addComponent(lblManageCourseWork)
                 .addGap(31, 31, 31)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
@@ -285,8 +285,8 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnSetProgress;
     private javax.swing.JButton btnSubmit;
     private javax.swing.JComboBox<String> cmbSemester;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblManageCourseWork;
     private javax.swing.JLabel lblSemester;
     private javax.swing.JSpinner spnProgress;
     private javax.swing.JTable tblCourses;

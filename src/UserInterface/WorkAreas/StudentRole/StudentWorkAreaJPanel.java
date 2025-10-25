@@ -180,9 +180,10 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
 
     private void btnGraduationAuditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGraduationAuditActionPerformed
         // TODO add your handling code here:
+        String name = "Graduat Audit";
         GraduationAuditJPanel ga = new GraduationAuditJPanel(workArea, dept, personId);
-        workArea.add("gradAudit", ga);
-        ((CardLayout) workArea.getLayout()).show(workArea, "gradAudit");
+        workArea.add(name, ga);
+        ((java.awt.CardLayout) workArea.getLayout()).show(workArea, name);
 
 
     }//GEN-LAST:event_btnGraduationAuditActionPerformed

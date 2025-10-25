@@ -22,9 +22,9 @@ import java.util.*;
  * @author shaoweili
  */
 public class GraduationAuditJPanel extends javax.swing.JPanel {
-    private final JPanel main;         // parent CardLayout
-    private final Department dept;     // model department
-    private final String personId;     // NUID/person id on the model side
+    private final JPanel main;         
+    private final Department dept;   
+    private final String personId; 
 
     private static final int REQUIRED_CREDITS_DEFAULT = 32;
     private static final String[] KNOWN_SEMESTERS = {"Fall2025", "Spring2026"};
@@ -215,10 +215,10 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
         }
         String semester = String.valueOf(tblCourseGrade.getValueAt(row, 0));
 
-        // Navigate to TranscriptJPanel (create this constructor)
         TranscriptJPanel tp = new TranscriptJPanel(main, dept, personId, semester);
-        main.add("transcript:" + semester, tp);
-        ((CardLayout) main.getLayout()).show(main, "transcript:" + semester);
+        String cardName = "transcript:" + semester;
+        main.add(cardName, tp);
+        ((java.awt.CardLayout) main.getLayout()).show(main, cardName);
     }//GEN-LAST:event_btnSeeDetailsActionPerformed
 
   
