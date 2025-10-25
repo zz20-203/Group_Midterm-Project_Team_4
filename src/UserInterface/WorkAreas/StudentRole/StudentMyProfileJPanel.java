@@ -1,8 +1,11 @@
+
 package UserInterface.WorkAreas.StudentRole;
-import info5100.university.example.Department.Department;
-import info5100.university.example.Persona.Person;
-import java.awt.CardLayout;
-import javax.swing.JPanel;
+
+import info5100.university.example.Persona.StudentProfile;          
+import info5100.university.example.Persona.Person;             
+import info5100.university.example.Department.Department;       
+
+import javax.swing.JPanel;  
 
 /**
  *
@@ -14,12 +17,6 @@ public class StudentMyProfileJPanel extends javax.swing.JPanel {
     private final Department dept;
     private final StudentProfile profile; 
 
-    /**
-     * Creates new form StudentMyProfileJPanel
-     */
-    public Person getPerson(){
-        return person;
-    }
     public StudentMyProfileJPanel(StudentProfile profile, JPanel main, Department dept) {
         this.profile = profile;
         this.dept = dept;
@@ -27,7 +24,7 @@ public class StudentMyProfileJPanel extends javax.swing.JPanel {
         initComponents();
         
         //populate the field to MyProfile
-        Person p = (profile != null ? profile.getPerson() : null);   // requires profile.getPerson()
+        Person p = (profile != null ? profile.getPerson() : null);
 
         txtFirstName.setText(p != null && p.getFirstName() != null ? p.getFirstName() : "");
         txtLastName.setText (p != null && p.getLastName()  != null ? p.getLastName()  : "");
@@ -141,7 +138,7 @@ public class StudentMyProfileJPanel extends javax.swing.JPanel {
                         .addComponent(lblNuid)
                         .addGap(43, 43, 43)
                         .addComponent(txtNuid, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(294, Short.MAX_VALUE))
+                .addContainerGap(344, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

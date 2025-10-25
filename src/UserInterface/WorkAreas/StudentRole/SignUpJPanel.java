@@ -71,6 +71,8 @@ public class SignUpJPanel extends javax.swing.JPanel {
         txtNuid = new javax.swing.JTextField();
         txtLastName = new javax.swing.JTextField();
 
+        setPreferredSize(new java.awt.Dimension(850, 500));
+
         lblUsername.setText("Username");
 
         lblUsername1.setText("Password");
@@ -158,7 +160,7 @@ public class SignUpJPanel extends javax.swing.JPanel {
                     .addComponent(txtConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(50, 50, 50)
                 .addComponent(btnCreate)
-                .addContainerGap(180, Short.MAX_VALUE))
+                .addContainerGap(130, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

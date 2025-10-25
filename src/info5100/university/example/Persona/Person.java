@@ -5,24 +5,47 @@
  */
 package info5100.university.example.Persona;
 
-/**
- *
- * @author kal bugrara
- */
 public class Person {
+
+    String personId;  
+
+    // --- NEW fields ---
+    private String firstName;
+    private String lastName;  
+
     
-    String id;
-    public Person (String id){
-        
-        this.id = id;
-    }
-    public String getPersonId(){
-        return id;
+    public Person(String id) {
+        this.personId = id;
     }
 
-        public boolean isMatch(String id){
-        if(getPersonId().equals(id)) return true;
-        return false;
+    
+    public String getPersonId() {
+        return personId;
+    }
+
+  
+    public String getFirstName() { 
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) { 
+        this.firstName = firstName;
+    }
+
+    public String getLastName() { 
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {  
+        this.lastName = lastName;
     }
     
+    public boolean isMatch(String id) {
+    return id != null && id.equals(this.personId);
+    }
+
+    @Override
+    public String toString() {
+        return personId;
+    }
 }

@@ -194,17 +194,15 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         }
         
         if (profile instanceof StudentProfile) {
-            StudentProfile spp = (StudentProfile) profile;
+            String personId = useraccount.getPersonId();
 
-            String personId = useraccount.getPersonId(); 
-
-            // use the variable you already declared above
-            studentworkareajpanel = new StudentWorkAreaJPanel(
-            CardSequencePanel, business, personId, dept);
+            StudentWorkAreaJPanel studentPanel =
+                    new StudentWorkAreaJPanel(CardSequencePanel, personId, dept);
 
             CardSequencePanel.removeAll();
-            CardSequencePanel.add("student", studentworkareajpanel);
+            CardSequencePanel.add("student", studentPanel);
             ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
+            return;
 
         }
 
