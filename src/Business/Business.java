@@ -8,6 +8,7 @@ package Business;
 import Business.Person.PersonDirectory;
 import Business.Profiles.EmployeeDirectory;
 import Business.Profiles.StudentDirectory;
+import info5100.university.example.Department.Department;
 
 import Business.UserAccounts.UserAccountDirectory;
 
@@ -23,6 +24,11 @@ public class Business {
     EmployeeDirectory employeedirectory;
     UserAccountDirectory useraccountdirectory;
     StudentDirectory studentdirectory;
+    
+    private Department modelDepartment;
+
+    public Department getModelDepartment() { return modelDepartment; }
+    public void setModelDepartment(Department modelDepartment) { this.modelDepartment = modelDepartment; }
     
 
 
