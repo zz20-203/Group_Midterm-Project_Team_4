@@ -83,6 +83,7 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1000, 850));
 
         actionsidejpanel.setBackground(new java.awt.Color(0, 153, 153));
         actionsidejpanel.setMinimumSize(new java.awt.Dimension(200, 200));
