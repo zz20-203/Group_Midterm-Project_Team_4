@@ -51,6 +51,24 @@ public void addElectiveCourse(Course c){
         degree.addElectiveCourse(c);
         
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Degree getDegree() {
+        return degree;
+    }
+
+    public void setDegree(Degree degree) {
+        this.degree = degree;
+    }
+
+    
     public PersonDirectory getPersonDirectory() {
 
         return persondirectory;

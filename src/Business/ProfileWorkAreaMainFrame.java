@@ -12,8 +12,14 @@ import Business.Profiles.StudentProfile;
 import Business.UserAccounts.UserAccount;
 import Business.UserAccounts.UserAccountDirectory;
 
+import info5100.university.example.Department.Department;
+import info5100.university.example.CourseCatalog.CourseCatalog;
+import info5100.university.example.CourseCatalog.Course;
+import info5100.university.example.CourseSchedule.CourseSchedule;
+
 import UserInterface.WorkAreas.AdminRole.AdminRoleWorkAreaJPanel;
 import UserInterface.WorkAreas.FacultyRole.FacultyWorkAreaJPanel;
+import UserInterface.WorkAreas.StudentRole.SignUpJPanel;
 import UserInterface.WorkAreas.StudentRole.StudentWorkAreaJPanel;
 import javax.swing.JPanel;
 
@@ -24,6 +30,7 @@ import javax.swing.JPanel;
 public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
 
     Business business;
+    Department dept;
 
     /**
      * Creates new form PricingMainFrame
@@ -32,6 +39,21 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
     public ProfileWorkAreaMainFrame() {
         initComponents();
         business = ConfigureABusiness.initialize();
+        
+        dept = new Department("Information System");
+        CourseCatalog cc = dept.getCourseCatalog();
+        
+        Course c5100 = cc.newCourse("INFO5100","Application Engineering & Development",4);
+        Course c6150 = cc.newCourse("INFO6150","Web Design & UX",4);
+        Course c6205 = cc.newCourse("INFO6205","Program Structure & Algorithms",4);
+
+        CourseSchedule fall = dept.newCourseSchedule("Fall2025");
+        fall.newCourseOffer(c5100.getCourseNumber()).generatSeats(30);
+        fall.newCourseOffer(c6150.getCourseNumber()).generatSeats(30);
+
+        CourseSchedule spring = dept.newCourseSchedule("Spring2026");
+        spring.newCourseOffer(c6205.getCourseNumber()).generatSeats(30);
+        spring.newCourseOffer(c5100.getCourseNumber()).generatSeats(30);
         
 
     }
@@ -51,11 +73,12 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
 
         SplitHomeArea = new javax.swing.JSplitPane();
         actionsidejpanel = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btnLogin = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         UserNameTextField = new javax.swing.JTextField();
         PasswordTextField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
+        btnSignUp = new javax.swing.JButton();
         CardSequencePanel = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
 
@@ -64,8 +87,9 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         actionsidejpanel.setBackground(new java.awt.Color(0, 153, 153));
         actionsidejpanel.setMinimumSize(new java.awt.Dimension(200, 200));
 
-        jButton1.setText("Login");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnLogin.setText("Login");
+        btnLogin.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 LoginButtonActionPerformed(evt);
             }
@@ -84,6 +108,14 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
 
         jLabel2.setText("Password");
 
+        btnSignUp.setText("Sign up");
+        btnSignUp.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnSignUp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSignUpLoginButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout actionsidejpanelLayout = new javax.swing.GroupLayout(actionsidejpanel);
         actionsidejpanel.setLayout(actionsidejpanelLayout);
         actionsidejpanelLayout.setHorizontalGroup(
@@ -95,7 +127,9 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
                     .addComponent(UserNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(PasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(actionsidejpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(btnSignUp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
+                        .addComponent(btnLogin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         actionsidejpanelLayout.setVerticalGroup(
             actionsidejpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -109,7 +143,10 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addComponent(PasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSignUp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         SplitHomeArea.setLeftComponent(actionsidejpanel);
@@ -157,9 +194,14 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         }
         
         if (profile instanceof StudentProfile) {
-
             StudentProfile spp = (StudentProfile) profile;
-            studentworkareajpanel = new StudentWorkAreaJPanel(business, spp, CardSequencePanel);
+
+            String personId = useraccount.getPersonId(); 
+
+            // use the variable you already declared above
+            studentworkareajpanel = new StudentWorkAreaJPanel(
+            CardSequencePanel, business, personId, dept);
+
             CardSequencePanel.removeAll();
             CardSequencePanel.add("student", studentworkareajpanel);
             ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
@@ -180,6 +222,13 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
     private void PasswordTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordTextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_PasswordTextFieldActionPerformed
+
+    private void btnSignUpLoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignUpLoginButtonActionPerformed
+        // TODO add your handling code here:
+        SignUpJPanel p = new SignUpJPanel(CardSequencePanel, business, dept);
+        CardSequencePanel.add("signup", p);
+        ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
+    }//GEN-LAST:event_btnSignUpLoginButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -225,9 +274,15 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
     private javax.swing.JSplitPane SplitHomeArea;
     private javax.swing.JTextField UserNameTextField;
     private javax.swing.JPanel actionsidejpanel;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnLogin;
+    private javax.swing.JButton btnSignUp;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     // End of variables declaration//GEN-END:variables
+    public void clearLoginFields() {
+    UserNameTextField.setText("");
+    PasswordTextField.setText("");
+    UserNameTextField.requestFocusInWindow();
+    }
 }
