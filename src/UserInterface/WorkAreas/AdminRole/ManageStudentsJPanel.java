@@ -270,7 +270,7 @@ public class ManageStudentsJPanel extends javax.swing.JPanel {
 
 
                 StudentProfile sp = (StudentProfile) ua.getAssociatedPersonProfile();
-                business.getStudentDirectory().getStudentList().remove(sp);
+                business.getStudentDirectory().getStudentlist().remove(sp);
 
                 iterator.remove();
                 javax.swing.JOptionPane.showMessageDialog(this, 

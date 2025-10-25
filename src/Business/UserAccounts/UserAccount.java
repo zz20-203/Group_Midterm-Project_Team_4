@@ -103,7 +103,14 @@ public class UserAccount {
         this.password = password;
     }
         
-        
+    public void setUserLoginName(String username) {
+        this.username = username;
+        touchUpdated();
+    }
+    
+    public void touchUpdated(){
+        this.lastUpdated = LocalDateTime.now();
+    }
         
     @Override
         public String toString(){

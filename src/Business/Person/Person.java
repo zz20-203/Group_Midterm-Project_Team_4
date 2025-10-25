@@ -63,7 +63,24 @@ public class Person {
     String last = (lastName != null) ? lastName : "";
     String fullName = (first + " " + last).trim(); //
     return fullName.isEmpty() ? "N/A" : fullName;
-}
+    }
+    
+    public void setName(String fullName) {
+    if (fullName == null || fullName.trim().isEmpty()) {
+        this.firstName = "";
+        this.lastName = "";
+        return;
+    }
+
+    String[] parts = fullName.trim().split("\\s+", 2); 
+    this.firstName = parts[0];
+
+    if (parts.length > 1) {
+        this.lastName = parts[1];
+    } else {
+        this.lastName = ""; 
+    }
+    }
 
     @Override
     public String toString() {
