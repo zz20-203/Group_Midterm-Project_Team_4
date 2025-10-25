@@ -41,7 +41,9 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         CardSequencePanel.setLayout(new java.awt.CardLayout());
         business = ConfigureABusiness.initialize();
         
-        dept = new Department("Information System");
+        dept = new info5100.university.example.Department.Department("Information System");
+        business.setModelDepartment(dept); 
+        
         CourseCatalog cc = dept.getCourseCatalog();
         
         Course c5100 = cc.newCourse("INFO5100","Application Engineering & Development",4);
