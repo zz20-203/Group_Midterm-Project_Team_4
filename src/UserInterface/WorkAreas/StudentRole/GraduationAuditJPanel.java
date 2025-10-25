@@ -6,13 +6,15 @@ import info5100.university.example.Persona.PersonDirectory;
 import info5100.university.example.Persona.StudentDirectory;
 import info5100.university.example.Persona.StudentProfile;
 import info5100.university.example.CourseSchedule.CourseLoad;
-import info5100.university.example.CourseSchedule.SeatAssignment;
 import info5100.university.example.CourseSchedule.CourseOffer;
+import info5100.university.example.CourseSchedule.SeatAssignment;
 import info5100.university.example.Department.Department;
+import info5100.university.example.CourseCatalog.Course;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.CardLayout;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -20,31 +22,36 @@ import java.util.*;
  * @author shaoweili
  */
 public class GraduationAuditJPanel extends javax.swing.JPanel {
-    private final JPanel workArea;
-    private final Department dept;
-    private final String personId;
-    private final int requiredCredits;
-    
-    // convenient default required credits for the program
-    private static final int DEFAULT_REQUIRED_CREDITS = 32;
+    private final JPanel main;         // parent CardLayout
+    private final Department dept;     // model department
+    private final String personId;     // NUID/person id on the model side
 
-    /**
-     * Creates new form GraduationAuditJPanel
-     */
+    private static final int REQUIRED_CREDITS_DEFAULT = 32;
+    private static final String[] KNOWN_SEMESTERS = {"Fall2025", "Spring2026"};
     
-    public GraduationAuditJPanel(JPanel workArea, Department dept, String personId) {
-        this(workArea, dept, personId, DEFAULT_REQUIRED_CREDITS);
-    }
-    
-    public GraduationAuditJPanel(JPanel workArea, Department dept, String personId, int requiredCredits) {
-        this.workArea = workArea;
+    public GraduationAuditJPanel(JPanel main, Department dept, String personId) {
+        this.main = main;
         this.dept = dept;
         this.personId = personId;
-        this.requiredCredits = requiredCredits;
-        
         initComponents();
-        configureUI();
+        
+        // read-only fields
+        txtDeptName.setEditable(false);
+        txtRequiredCredits.setEditable(false);
+        txtEarnedCredits.setEditable(false);
+        txtGpa.setEditable(false);
+        
+        // table setup (semesters with grade and credits)
+        tblCourseGrade.setModel(new DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Semester", "Credits", "Grade", "Status"}
+        ) {
+            @Override public boolean isCellEditable(int r, int c) { return false; }
+        });
+
+        // populate UI
         loadAudit();
+
     }
 
     /**
@@ -70,7 +77,7 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
         txtDeptName = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblCourseGrade = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        btnSeeDetails = new javax.swing.JButton();
 
         lblGradAudit.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         lblGradAudit.setText("Perform Graduation Audit");
@@ -114,10 +121,10 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(tblCourseGrade);
 
-        jButton1.setText("See details");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSeeDetails.setText("See details");
+        btnSeeDetails.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSeeDetailsActionPerformed(evt);
             }
         });
 
@@ -152,7 +159,7 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(btnBack)
                             .addGap(18, 18, 18)
-                            .addComponent(jButton1))
+                            .addComponent(btnSeeDetails))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 867, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(42, 42, 42))
         );
@@ -185,7 +192,7 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(btnSeeDetails)
                     .addComponent(btnBack))
                 .addContainerGap(62, Short.MAX_VALUE))
         );
@@ -193,145 +200,31 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        if (workArea != null) {
-            ((CardLayout) workArea.getLayout()).previous(workArea);
+        if (main != null) {
+            ((CardLayout) main.getLayout()).previous(main);
         }
 
     }//GEN-LAST:event_btnBackActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnSeeDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeeDetailsActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    
-       
-    private void configureUI() {
-        // make the summary fields read-only
-        txtDeptName.setEditable(false);
-        txtRequiredCredits.setEditable(false);
-        txtEarnedCredits.setEditable(false);
-        txtGpa.setEditable(false);
-
-        pbCreditsProgress.setMinimum(0);
-        pbCreditsProgress.setMaximum(requiredCredits);
-        pbCreditsProgress.setStringPainted(true);  
-    }
-
-    private void loadAudit() {
-        // Header
-        txtDeptName.setText(safeDeptName());
-        txtRequiredCredits.setText(String.valueOf(requiredCredits));
-
-        DefaultTableModel m = (DefaultTableModel) tblCourseGrade.getModel();
-        m.setRowCount(0);
-
-        StudentProfile sp = getOrCreateModelStudent();
-        int earned = 0;
-
-        double gpSum = 0.0;  // grade points * credits
-        int gradedCredits = 0;
-
-        for (String sem : semestersToCheck()) {
-            CourseLoad cl = sp.getCourseLoadBySemester(sem);
-            if (cl == null) continue;
-
-            for (SeatAssignment sa : cl.getSeatAssignments()) {
-                CourseOffer co = sa.getCourseOffer();
-                if (co == null) continue;
-
-                String courseNo = co.getCourseNumber();
-                Object subject = co.getSubjectCourse();
-                int credits = safeCredits(subject);
-                String grade = safeGrade(sa);
-                String status = statusFromGrade(grade);
-
-                // Earned credits: count all enrolled/completed (adjust if you only want completed)
-                earned += credits;
-
-                // GPA: only include rows that actually have a grade
-                double gp = gradePointFor(grade);
-                if (!Double.isNaN(gp)) {
-                    gpSum += gp * credits;
-                    gradedCredits += credits;
-                }
-
-                m.addRow(new Object[]{sem, courseNo, credits, grade, status});
-            }
+        int row = tblCourseGrade.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Select a semester first.");
+            return;
         }
-    }
-    
+        String semester = String.valueOf(tblCourseGrade.getValueAt(row, 0));
 
-    private StudentProfile getOrCreateModelStudent() {
-        PersonDirectory pd = dept.getPersonDirectory();
-        Person mp = pd.findPerson(personId);
-        if (mp == null) mp = pd.newPerson(personId);
+        // Navigate to TranscriptJPanel (create this constructor)
+        TranscriptJPanel tp = new TranscriptJPanel(main, dept, personId, semester);
+        main.add("transcript:" + semester, tp);
+        ((CardLayout) main.getLayout()).show(main, "transcript:" + semester);
+    }//GEN-LAST:event_btnSeeDetailsActionPerformed
 
-        StudentDirectory sd = dept.getStudentDirectory();
-        StudentProfile sp = sd.findStudent(personId);
-        if (sp == null) sp = sd.newStudentProfile(mp);
-        return sp;
-
-    }
-
-    private int safeCredits(Object subject) {
-        if (subjectCourse == null) return 4;
-        try { return (int) subjectCourse.getClass().getMethod("getCredits").invoke(subjectCourse); }
-        catch (Exception ignore) {}
-        try { return (int) subjectCourse.getClass().getMethod("getCreditHours").invoke(subjectCourse); }
-        catch (Exception ignore) {}
-        return 4;      
-    }
-
-    private List<String> semestersToCheck() {
-        return Arrays.asList("Fall2025", "Spring2026", "Summer2025");  
-    }
-
-    private String safeGrade(SeatAssignment sa) {
-        try {
-            Object g = sa.getClass().getMethod("getGrade").invoke(sa);
-            return (g == null ? "-" : String.valueOf(g));
-        } catch (Exception ignore) {
-            return "-";
-        }
-        
-    }
-
-    private String statusFromGrade(String grade) {
-        return ("-".equals(grade) || grade.trim().isEmpty()) ? "Enrolled" : "Completed";
-    }
-
-    private double gradePointFor(String grade) {
-        if (grade == null || grade.isBlank() || "-".equals(grade)) return Double.NaN; // not counted
-        char g = Character.toUpperCase(grade.trim().charAt(0));
-        switch (g) {
-            case 'A': return 4.0;
-            case 'B': return 3.0;
-            case 'C': return 2.0;
-            case 'D': return 1.0;
-            case 'F': default: return 0.0;
-        }
-    }
-
-    private String safeDeptName() {
-        try { return String.valueOf(dept.getClass().getMethod("getName").invoke(dept)); }
-        catch (Exception ignore) { return String.valueOf(dept); 
-        }
-    
-    // Summary & progress bar
-        txtEarnedCredits.setText(String.valueOf(earned));
-        int remaining = Math.max(0, requiredCredits - earned);
-        pbCreditsProgress.setMaximum(requiredCredits);
-        pbCreditsProgress.setValue(Math.min(requiredCredits, earned));
-        pbCreditsProgress.setString(earned + " / " + requiredCredits + " credits");
-
-        // GPA
-        String gpaStr = gradedCredits == 0 ? "-" : String.format("%.2f", gpSum / gradedCredits);
-        txtGpa.setText(gpaStr);
-    }
   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnSeeDetails;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblDeptName;
     private javax.swing.JLabel lblEarnedCredits;
@@ -346,4 +239,114 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtGpa;
     private javax.swing.JTextField txtRequiredCredits;
     // End of variables declaration//GEN-END:variables
+
+    private void loadAudit() {
+        StudentProfile sp = getOrCreateStudent();
+        // dept/program name (fall back to toString if method name differs)
+        txtDeptName.setText(safeDeptName(dept));
+
+        // credits & GPA
+        int required = REQUIRED_CREDITS_DEFAULT;
+        int earned = 0;
+        double gpaSum = 0.0;
+        int gradedCredits = 0;
+
+        // table rows by semester
+        DefaultTableModel m = (DefaultTableModel) tblCourseGrade.getModel();
+        m.setRowCount(0);
+
+        for (String sem : KNOWN_SEMESTERS) {
+            CourseLoad cl = sp.getCourseLoadBySemester(sem);
+            if (cl == null) continue;
+
+            int semCredits = 0;
+            boolean allGraded = true;
+
+            for (SeatAssignment sa : cl.getSeatAssignments()) {
+                CourseOffer co = sa.getCourseOffer();
+                Course course = co.getSubjectCourse();
+                int cr = safeCredits(course);
+                semCredits += cr;
+                earned += cr;
+
+                String letter = safeGrade(sa);
+                if (letter == null || letter.isBlank()) {
+                    allGraded = false;
+                } else {
+                    double points = letterToPoints(letter);
+                    if (points >= 0) {
+                        gpaSum += points * cr;
+                        gradedCredits += cr;
+                    }
+                }
+            }
+            String overallGrade = (gradedCredits == 0 ? "-" : "—"); // use the accumulatave score for the semester grade
+            String status = allGraded ? "Completed" : "In progress";
+            m.addRow(new Object[]{sem, semCredits, overallGrade, status});
+        }
+        
+        txtRequiredCredits.setText(String.valueOf(required));
+        txtEarnedCredits.setText(String.valueOf(earned));
+        
+        //set up the progress bar to see the required and earned comparison
+        pbCreditsProgress.setMaximum(required);
+        pbCreditsProgress.setValue(Math.min(required, earned));
+        pbCreditsProgress.setStringPainted(true);
+        pbCreditsProgress.setString(earned + " / " + required + " credits");
+        
+        // Current GPA - accumulative GPA fro all semesters the student has taken
+        String gpaStr = (gradedCredits == 0) ? "-" : String.format("%.2f", gpaSum / gradedCredits);
+        txtGpa.setText(gpaStr);
+    }
+
+    private StudentProfile getOrCreateStudent() {
+        PersonDirectory pd = dept.getPersonDirectory();
+        Person mp = pd.findPerson(personId);
+        if (mp == null) mp = pd.newPerson(personId);
+        StudentDirectory sd = dept.getStudentDirectory();
+        StudentProfile sp = sd.findStudent(personId);
+        if (sp == null) sp = sd.newStudentProfile(mp);
+        return sp;
+    }
+
+    private String safeDeptName(Department dept) {
+        try {
+            Method m = dept.getClass().getMethod("getName");
+            Object v = m.invoke(dept);
+            return v == null ? "" : v.toString();
+        } catch (Exception ignored) { }
+        return dept.toString();
+    }
+
+    private String safeGrade(SeatAssignment sa) {
+        //use SeatAssignment getGrade() and returns a letter like "A", "B+" … or null.
+        try {
+            Object v = sa.getClass().getMethod("getGrade").invoke(sa);
+            return v == null ? null : v.toString();
+        } catch (Exception ignored) { }
+        return null;
+    }
+
+    private double letterToPoints(String letter) {
+        switch (letter) {
+            case "A": return 4.0;
+            case "A-": return 3.7;
+            case "B+": return 3.3;
+            case "B": return 3.0;
+            case "B-": return 2.7;
+            case "C+": return 2.3;
+            case "C": return 2.0;
+            case "C-": return 1.7;
+            case "D": return 1.0;
+            case "F": return 0.0;
+            default:   return 0.0;  // grade like IP, W, null, etc.
+        
+    }
+        
 }
+    //use the course's credits
+    private int safeCredits(info5100.university.example.CourseCatalog.Course c) {
+        if (c == null) return 0;
+        return c.getCredits(); 
+    }
+    }

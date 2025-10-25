@@ -1,14 +1,28 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
+
 package UserInterface.WorkAreas.StudentRole;
+import info5100.university.example.Department.Department;
+import info5100.university.example.Persona.Person;
+import info5100.university.example.Persona.PersonDirectory;
+import info5100.university.example.Persona.StudentDirectory;
+import info5100.university.example.Persona.StudentProfile;
+import info5100.university.example.CourseSchedule.CourseLoad;
+import info5100.university.example.CourseSchedule.SeatAssignment;
+import info5100.university.example.CourseCatalog.Course;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.LinkedHashSet;
 
 /**
  *
  * @author shaoweili
  */
 public class TranscriptJPanel extends javax.swing.JPanel {
+    private final JPanel main;
+    private final Department dept;
+    private final String personId;
+    private final String initialSemester;
 
     /**
      * Creates new form TranscriptJPanel
@@ -33,7 +47,7 @@ public class TranscriptJPanel extends javax.swing.JPanel {
         btnBack = new javax.swing.JButton();
         lblGpa = new javax.swing.JLabel();
         txtCurrentGpa = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
+        lblTranscriptDetails = new javax.swing.JLabel();
 
         lblSemester.setText("Semester");
 
@@ -69,8 +83,8 @@ public class TranscriptJPanel extends javax.swing.JPanel {
 
         lblGpa.setText("GPA");
 
-        jLabel1.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
-        jLabel1.setText("Transcript Details");
+        lblTranscriptDetails.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
+        lblTranscriptDetails.setText("Transcript Details");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -93,7 +107,7 @@ public class TranscriptJPanel extends javax.swing.JPanel {
                                     .addComponent(txtCurrentGpa)))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(352, 352, 352)
-                        .addComponent(jLabel1)))
+                        .addComponent(lblTranscriptDetails)))
                 .addContainerGap(45, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -108,7 +122,7 @@ public class TranscriptJPanel extends javax.swing.JPanel {
                     .addComponent(txtCurrentGpa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblGpa))
                 .addGap(26, 26, 26)
-                .addComponent(jLabel1)
+                .addComponent(lblTranscriptDetails)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -126,10 +140,10 @@ public class TranscriptJPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JComboBox<String> cmbSemester;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblGpa;
     private javax.swing.JLabel lblSemester;
+    private javax.swing.JLabel lblTranscriptDetails;
     private javax.swing.JTable tblTranscript;
     private javax.swing.JTextField txtCurrentGpa;
     // End of variables declaration//GEN-END:variables
