@@ -28,7 +28,7 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
     private final String homeCard;
 
     private static final int REQUIRED_CREDITS_DEFAULT = 32;
-    private static final String[] KNOWN_SEMESTERS = { "Summer2025", "Fall2025", "Spring2026" };
+    private static final String[] KNOWN_SEMESTERS = {"Summer2025","Fall2025","Spring2026"};
     
     
     
@@ -93,6 +93,7 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
         lblGradAudit.setText("Perform Graduation Audit");
 
         btnBack.setText("<< Back");
+        btnBack.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBack.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -140,6 +141,7 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tblCourseGrade);
 
         btnSeeDetails.setText("See details");
+        btnSeeDetails.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSeeDetails.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSeeDetailsActionPerformed(evt);
@@ -165,14 +167,18 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
                             .addComponent(lblDeptName)
                             .addComponent(lblGpa)
                             .addComponent(lblEarningCredits))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lblGradAudit)
-                            .addComponent(txtEarnedCredits)
-                            .addComponent(txtRequiredCredits)
-                            .addComponent(txtDeptName)
-                            .addComponent(txtEarningCredits, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtGpa, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(34, 34, 34)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtEarningCredits, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                                    .addComponent(txtEarnedCredits, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txtRequiredCredits, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txtDeptName, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txtGpa, javax.swing.GroupLayout.Alignment.TRAILING)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(lblGradAudit)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 245, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
@@ -391,7 +397,7 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
             case "C-": return 1.7;
             case "D": return 1.0;
             case "F": return 0.0;
-            default:   return 0.0;  // grade like IP, W, null, etc.
+            default:   return -1.0;  // grade like IP, W, null, etc.
         }
     }
     

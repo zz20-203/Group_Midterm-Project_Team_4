@@ -117,6 +117,7 @@ public class TranscriptJPanel extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tblTranscript);
 
         btnBack.setText("<< Back");
+        btnBack.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBackActionPerformed(evt);
@@ -236,20 +237,13 @@ public class TranscriptJPanel extends javax.swing.JPanel {
     private int safeCredits(Course c) {return c == null ? 0 : c.getCredits();}
 
     private double letterToPoints(String grade) {
-        if (grade == null) return -1.0;
-        switch (grade.trim().toUpperCase()) {
-            case "A":  return 4.0;
-            case "A-": return 3.7;
-            case "B+": return 3.3;
-            case "B":  return 3.0;
-            case "B-": return 2.7;
-            case "C+": return 2.3;
-            case "C":  return 2.0;
-            case "C-": return 1.7;
-            case "D":  return 1.0;
-            case "F":  return 0.0;
-            default:   return -1.0; 
-        
+        if (grade == null) return -1.0;   
+    switch (grade.trim().toUpperCase()) {
+        case "A":  return 4.0;  case "A-": return 3.7;
+        case "B+": return 3.3;  case "B":  return 3.0; case "B-": return 2.7;
+        case "C+": return 2.3;  case "C":  return 2.0; case "C-": return 1.7;
+        case "D":  return 1.0;  case "F":  return 0.0;
+        default:   return -1.0;     
     }   
         
     }

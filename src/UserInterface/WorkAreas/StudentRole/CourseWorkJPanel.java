@@ -30,8 +30,7 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
     private final String homeCard;
     private final Map<String, Submission> submissionStore = new HashMap<>();
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    
-    
+
 
     /**
      * Creates new form CourseWorkJPanel
@@ -58,6 +57,7 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
     
     private void setStatus(String s) {System.out.println("[CourseWork] " + s);}
     
+    
     private StudentProfile getOrCreateModelStudent() {
         PersonDirectory pd = dept.getPersonDirectory();
         Person mp = pd.findPerson(personId);
@@ -82,6 +82,12 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
     private String getSelectedCourseNumber() {
         int row = tblCourses.getSelectedRow();
         return (row < 0) ? null : String.valueOf(tblCourses.getValueAt(row, 0));
+    }
+    
+    private boolean isGraded(SeatAssignment sa) {
+    String g;
+    try { g = sa.getGrade(); } catch (Exception e) { return false; }
+    return g != null && !g.trim().isEmpty() && !"-".equals(g.trim());
     }
 
     /**
@@ -135,6 +141,7 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tblCourses);
 
         btnSubmit.setText("Submit");
+        btnSubmit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSubmit.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btnSubmit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -143,6 +150,7 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
         });
 
         btnSetProgress.setText("Set Progress");
+        btnSetProgress.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSetProgress.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btnSetProgress.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -151,6 +159,7 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
         });
 
         btnReload.setText("Reload table");
+        btnReload.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnReload.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btnReload.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -158,7 +167,10 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
             }
         });
 
+        spnProgress.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
         btnBack.setText("<< Back");
+        btnBack.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBack.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -307,14 +319,17 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
             CourseOffer co = sa.getCourseOffer();
             String cnum  = co.getCourseNumber();
             String cname = co.getSubjectCourse().getName();
-
+            
             Submission sub = submissionStore.get(keyOf(sem, cnum));
-            String progressStr = (sub == null) ? "0" : String.valueOf(sub.progress);
+
+            // DEFAULT: if no manual progress yet and the course is graded, show 100; else 0
+            int progress = (sub != null) ? sub.progress : (isGraded(sa) ? 100 : 0);
+
             String last = (sub == null || sub.timestamp == 0)
                     ? ""
                     : (sdf.format(new Date(sub.timestamp)) + " • " + sub.fileName);
 
-            m.addRow(new Object[]{cnum, cname, progressStr, last});
+            m.addRow(new Object[]{ cnum, cname, String.valueOf(progress), last });
           
         }
 
