@@ -10,6 +10,8 @@ import Business.Person.Person;
 import Business.Person.PersonDirectory;
 import Business.Profiles.EmployeeDirectory;
 import Business.Profiles.EmployeeProfile;
+import Business.Profiles.FacultyDirectory;
+import Business.Profiles.FacultyProfile;
 import Business.Profiles.StudentDirectory;
 import Business.Profiles.StudentProfile;
 
@@ -67,6 +69,16 @@ class ConfigureABusiness {
         // Admin
         uadirectory.newUserAccount(adminProfile, "admin", "****");
         
+        // Faculty
+        Person facultyPerson = persondirectory.newPerson("1002");
+        facultyPerson.setName("Alice Teacher");
+        facultyPerson.setFirstName("Alice");
+        facultyPerson.setLastName("Teacher");
+        facultyPerson.setEmail("alice@generic-email-provider.com");
+        
+        FacultyDirectory facultyDirectory = business.getFacultyDirectory();
+        FacultyProfile facultyProfile = facultyDirectory.newFacultyProfile(facultyPerson);
+        uadirectory.newUserAccount(facultyProfile, "alice", "****");
         
         
  //       UserAccount ua3 = uadirectory.newUserAccount(employeeprofile0, "admin", "****"); /// order products for one of the customers and performed by a sales person

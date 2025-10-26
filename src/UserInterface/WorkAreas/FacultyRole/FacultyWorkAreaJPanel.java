@@ -11,7 +11,6 @@
 package UserInterface.WorkAreas.FacultyRole;
 
 import Business.Business;
-import UserInterface.WorkAreas.AdminRole.ManagePersonnelWorkResp.ManagePersonsJPanel;
 import javax.swing.JPanel;
 
 /**
@@ -62,7 +61,7 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
         btnManageCourses.setPreferredSize(new java.awt.Dimension(240, 30));
         btnManageCourses.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnManageCoursesIdentifyResourceAssetsActionPerformed(evt);
+                btnManageCoursesActionPerformed(evt);
             }
         });
 
@@ -147,16 +146,19 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnManageCoursesIdentifyResourceAssetsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCoursesIdentifyResourceAssetsActionPerformed
-        // TODO add your handling code here:
-        CardSequencePanel.removeAll();
+    private void btnManageCoursesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCoursesActionPerformed
+        
+        // Create an instance of the ManageCoursesJPanel
+        ManageCoursesJPanel manageCoursesPanel = new ManageCoursesJPanel(business, CardSequencePanel);
+        
+        // Add the new panel to the CardSequencePanel
+        CardSequencePanel.add("ManageCoursesJPanel", manageCoursesPanel);
+        
+        // Switch to the new panel
+        java.awt.CardLayout layout = (java.awt.CardLayout) CardSequencePanel.getLayout();
+        layout.show(CardSequencePanel, "ManageCoursesJPanel");
 
-        ManagePersonsJPanel aos = new ManagePersonsJPanel(business, CardSequencePanel);
-
-        CardSequencePanel.add("Manage Persons", aos);
-        ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
-
-    }//GEN-LAST:event_btnManageCoursesIdentifyResourceAssetsActionPerformed
+    }//GEN-LAST:event_btnManageCoursesActionPerformed
 
     private void btnManageStudentProfilesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStudentProfilesActionPerformed
         // TODO add your handling code here:

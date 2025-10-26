@@ -4,18 +4,50 @@
  */
 package UserInterface.WorkAreas.FacultyRole;
 
+import Business.Business;
+import info5100.university.example.CourseCatalog.Course;
+import info5100.university.example.Department.Department;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Jerry Xu
  */
 public class ManageCoursesJPanel extends javax.swing.JPanel {
 
+    private JPanel CardSequencePanel;
+    private Business business;
+    private Department department;
+
     /**
      * Creates new form ManageCoursesJPanel
      */
-    public ManageCoursesJPanel() {
+    public ManageCoursesJPanel(Business b, JPanel clp) {
         initComponents();
+        this.business = b;
+        this.CardSequencePanel = clp;
+        this.department = business.getModelDepartment();
+        populateTable();
     }
+    
+    private void populateTable() {
+        DefaultTableModel model = (DefaultTableModel) tblCourse.getModel();
+        model.setRowCount(0); // Clear the table before populating
+
+        if (department != null && department.getCourseCatalog() != null) {
+            for (Course course : department.getCourseCatalog().getCourseList()) {
+                Object[] row = new Object[4];
+                row[0] = course.getCourseNumber();
+                row[1] = course.getName();
+                row[2] = course.getCredits();
+                row[3] = department.getName();
+                model.addRow(row);
+            }
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -32,7 +64,7 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
         btnBack = new javax.swing.JButton();
         btnEdit = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        UserAccountTable = new javax.swing.JTable();
+        tblCourse = new javax.swing.JTable();
         btnNewCourse = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(640, 480));
@@ -64,12 +96,12 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
             }
         });
 
-        UserAccountTable.setModel(new javax.swing.table.DefaultTableModel(
+        tblCourse.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Course Number", "Course Name", "Credits", "Price"
+                "Course Number", "Course Name", "Credits", "Department"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -80,12 +112,7 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        UserAccountTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                UserAccountTableMousePressed(evt);
-            }
-        });
-        jScrollPane1.setViewportView(UserAccountTable);
+        jScrollPane1.setViewportView(tblCourse);
 
         btnNewCourse.setText("New");
         btnNewCourse.addActionListener(new java.awt.event.ActionListener() {
@@ -139,91 +166,59 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
-        int selectedRow = UserAccountTable.getSelectedRow();
+        int selectedRow = tblCourse.getSelectedRow();
 
         if (selectedRow < 0) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Please select a user account to delete.",
+            JOptionPane.showMessageDialog(this,
+                "Please select a course to delete.",
                 "No Selection",
-                javax.swing.JOptionPane.WARNING_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String username = (String) UserAccountTable.getValueAt(selectedRow, 0);
+        String courseNumber = (String) tblCourse.getValueAt(selectedRow, 0);
 
-        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
-            "Are you sure you want to delete the user account: " + username + "?",
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Are you sure you want to delete the course '" + courseNumber + "'?",
             "Confirm Delete",
-            javax.swing.JOptionPane.YES_NO_OPTION);
+            JOptionPane.YES_NO_OPTION);
 
-        if (confirm != javax.swing.JOptionPane.YES_OPTION) return;
-
-        java.util.Iterator<UserAccount> iterator = business.getUserAccountDirectory().getUserAccountList().iterator();
-        boolean found = false;
-
-        while (iterator.hasNext()) {
-            UserAccount ua = iterator.next();
-            if (ua.getUserLoginName().equalsIgnoreCase(username)) {
-                iterator.remove();
-                found = true;
-                break;
-            }
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
         }
 
-        if (found) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "User account '" + username + "' deleted successfully!");
+        Course courseToDelete = department.getCourseCatalog().getCourseByNumber(courseNumber);
+        if (courseToDelete != null) {
+            department.getCourseCatalog().getCourseList().remove(courseToDelete);
+            JOptionPane.showMessageDialog(this,
+                "Course '" + courseNumber + "' has been deleted successfully.");
+            populateTable(); // Refresh the table
         } else {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Error: Could not find matching UserAccount in directory.",
+             JOptionPane.showMessageDialog(this,
+                "Error: Could not find the selected course in the catalog.",
                 "Delete Failed",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+                JOptionPane.ERROR_MESSAGE);
         }
-
-        selecteduseraccount = null;
-        refreshTable();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
         CardSequencePanel.remove(this);
-        ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
-        //       ((java.awt.CardLayout)CardSequencePanel.getLayout()).show(CardSequencePanel, "IdentifyEventTypes");
+        java.awt.CardLayout layout = (java.awt.CardLayout) CardSequencePanel.getLayout();
+        layout.previous(CardSequencePanel);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        // TODO add your handling code here:
-        if (selecteduseraccount == null) return;
-
-        AdminUserAccount panel = new AdminUserAccount(business, selecteduseraccount, CardSequencePanel, this);
-        CardSequencePanel.add("AdminUserAccountPanel", panel);
-        ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
+        // Functionality to view/edit a course would go here.
+        JOptionPane.showMessageDialog(this, "Edit functionality is not yet implemented.");
     }//GEN-LAST:event_btnEditActionPerformed
 
-    private void UserAccountTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserAccountTableMousePressed
-        // Extracts the row (uaser account) in the table that is selected by the user
-        int selectedRow = UserAccountTable.getSelectedRow();
-        if (selectedRow < 0) return;
-
-        String username = (String) UserAccountTable.getValueAt(selectedRow, 0);
-
-        for (UserAccount ua : business.getUserAccountDirectory().getUserAccountList()) {
-            if (ua.getUserLoginName().equals(username)) {
-                selecteduseraccount = ua;
-                break;
-
-            }
-        }
-    }//GEN-LAST:event_UserAccountTableMousePressed
-
     private void btnNewCourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewCourseActionPerformed
-        // TODO add your handling code here:
+        // Functionality to create a new course would go here.
+        JOptionPane.showMessageDialog(this, "New Course functionality is not yet implemented.");
     }//GEN-LAST:event_btnNewCourseActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable UserAccountTable;
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEdit;
@@ -231,5 +226,6 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTableTitle;
     private javax.swing.JLabel lblTitle;
+    private javax.swing.JTable tblCourse;
     // End of variables declaration//GEN-END:variables
 }

@@ -63,7 +63,7 @@ public class Business {
     }
     
 
-    public FacultyDirectory getFacultyDirectory(){ // ADD
+    public FacultyDirectory getFacultyDirectory(){
         return facultydirectory;
     }
 
