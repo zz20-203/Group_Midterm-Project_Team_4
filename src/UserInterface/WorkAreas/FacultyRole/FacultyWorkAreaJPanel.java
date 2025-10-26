@@ -160,7 +160,7 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
 
     private void btnManageStudentProfilesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStudentProfilesActionPerformed
         // TODO add your handling code here:
-
+        
   
     }//GEN-LAST:event_btnManageStudentProfilesActionPerformed
 
