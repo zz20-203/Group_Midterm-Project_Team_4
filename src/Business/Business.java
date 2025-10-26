@@ -41,7 +41,7 @@ public class Business {
         employeedirectory = new EmployeeDirectory(this);
         useraccountdirectory = new UserAccountDirectory();
         studentdirectory = new StudentDirectory();
-
+        facultydirectory = new FacultyDirectory();
 
     }
 
