@@ -23,10 +23,15 @@ public class TranscriptJPanel extends javax.swing.JPanel {
     private final String personId;
     private String semester; 
     private final String homeCard;
+    private static final String[] KNOWN_SEMESTERS = { "Summer2025", "Fall2025", "Spring2026" };
 
     /**
      * Creates new form TranscriptJPanel
      */
+    public TranscriptJPanel(JPanel main, Department dept, String personId, String homeCard) { 
+        this(main, dept, personId, null, homeCard);   
+    }                                                               
+    
     public TranscriptJPanel(JPanel main, Department dept, String personId, String semester, String homeCard) {
         this.main = main;
         this.dept = dept;
@@ -38,13 +43,28 @@ public class TranscriptJPanel extends javax.swing.JPanel {
         
         txtCurrentGpa.setEditable(false);
         
+        //populate the semester combo
         cmbSemester.removeAllItems();
         if (semester != null && !semester.isBlank()) {
             cmbSemester.addItem(semester);
-            cmbSemester.setSelectedIndex(0);
+        } else {
+            StudentProfile sp = (dept == null ? null : dept.getStudentDirectory().findStudent(personId));
+            if (sp != null) {
+                // add only terms that actually have a course load
+                for (String s : KNOWN_SEMESTERS) {
+                    CourseLoad cl = sp.getCourseLoadBySemester(s);
+                    if (cl != null && !cl.getSeatAssignments().isEmpty()) {
+                        cmbSemester.addItem(s);
+                    }
+                }
+            }
+            // fallback: if nothing was added, at least show the known terms
+            if (cmbSemester.getItemCount() == 0) {
+                for (String s : KNOWN_SEMESTERS) cmbSemester.addItem(s);
+            }
         }
+        if (cmbSemester.getItemCount() > 0) cmbSemester.setSelectedIndex(0);
 
-        txtCurrentGpa.setEditable(false);
         loadTable();
         }
 
@@ -115,29 +135,27 @@ public class TranscriptJPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnBack)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 770, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(35, 35, 35)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnBack)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 770, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblSemester, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lblGpa, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(cmbSemester, 0, 136, Short.MAX_VALUE)
-                                    .addComponent(txtCurrentGpa)))))
+                            .addComponent(lblSemester, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblGpa, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(cmbSemester, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtCurrentGpa, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(352, 352, 352)
+                        .addGap(317, 317, 317)
                         .addComponent(lblTranscriptDetails)))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addGap(70, 70, 70)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSemester)
                     .addComponent(cmbSemester, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -151,7 +169,7 @@ public class TranscriptJPanel extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnBack)
-                .addContainerGap(166, Short.MAX_VALUE))
+                .addContainerGap(120, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -162,8 +180,9 @@ public class TranscriptJPanel extends javax.swing.JPanel {
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        ((CardLayout) main.getLayout()).show(main, homeCard);
-        
+        if (main != null && homeCard != null) {
+            ((CardLayout) main.getLayout()).show(main, homeCard);
+        }
     }//GEN-LAST:event_btnBackActionPerformed
 
 
@@ -217,7 +236,7 @@ public class TranscriptJPanel extends javax.swing.JPanel {
     private int safeCredits(Course c) {return c == null ? 0 : c.getCredits();}
 
     private double letterToPoints(String grade) {
-        if (grade == null) return 0.0;
+        if (grade == null) return -1.0;
         switch (grade.trim().toUpperCase()) {
             case "A":  return 4.0;
             case "A-": return 3.7;
@@ -229,7 +248,7 @@ public class TranscriptJPanel extends javax.swing.JPanel {
             case "C-": return 1.7;
             case "D":  return 1.0;
             case "F":  return 0.0;
-            default:   return 0.0; 
+            default:   return -1.0; 
         
     }   
         

@@ -23,6 +23,7 @@ public class SeatAssignment {
     
     public String getGrade() {
     return pointsToLetter(this.grade);
+    }
     
     public void assignGrade(String letter) {
         setGrade(letter);
