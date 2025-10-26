@@ -1,3 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+
+*/
 package Business;
 
 import Business.Person.Person;
@@ -19,7 +25,9 @@ class ConfigureABusiness {
 
     static Business initialize() {
         Business business = new Business("Information Systems");
-
+        Person p1 = business.getPersonDirectory().newPerson("1"); //TestCases - could be deleted
+        business.getStudentDirectory().newStudentProfile(p1);  //TestCases - could be deleted
+        
 // Create Persons
       PersonDirectory persondirectory = business.getPersonDirectory();
 // person representing sales organization        
@@ -34,20 +42,38 @@ class ConfigureABusiness {
         Person person009 = persondirectory.newPerson("Fidelity"); //we use this as customer
 
 // Create Admins to manage the business
-        EmployeeDirectory employeedirectory = business.getEmployeeDirectory();
-        EmployeeProfile employeeprofile0 = employeedirectory.newEmployeeProfile(person001);
-        
-        StudentDirectory studentdirectory = business.getStudentDirectory();
-        StudentProfile studentprofile0 = studentdirectory.newStudentProfile(person003);
+//        EmployeeDirectory employeedirectory = business.getEmployeeDirectory();
+//        EmployeeProfile employeeprofile0 = employeedirectory.newEmployeeProfile(person001);
+//        
+//        StudentDirectory studentdirectory = business.getStudentDirectory();
+//        StudentProfile studentprofile0 = studentdirectory.newStudentProfile(person003);
         
 
 
    
 // Create User accounts that link to specific profiles
+//TestCases - could be deleted
+        // Admin 
+        Person adminPerson = persondirectory.newPerson("1001");     
+        adminPerson.setName("John Smith");                          
+
+        EmployeeDirectory employeedirectory = business.getEmployeeDirectory();
+        EmployeeProfile adminProfile = employeedirectory.newEmployeeProfile(adminPerson);
+        
+        // Create User Accounts 
         UserAccountDirectory uadirectory = business.getUserAccountDirectory();
-        UserAccount ua3 = uadirectory.newUserAccount(employeeprofile0, "admin", "****"); /// order products for one of the customers and performed by a sales person
-        UserAccount ua4 = uadirectory.newUserAccount(studentprofile0, "adam", "****"); /// order products for one of the customers and performed by a sales person
+
+
+        // Admin
+        uadirectory.newUserAccount(adminProfile, "admin", "****");
+        
+        
+        
+ //       UserAccount ua3 = uadirectory.newUserAccount(employeeprofile0, "admin", "****"); /// order products for one of the customers and performed by a sales person
+ //       UserAccount ua4 = uadirectory.newUserAccount(studentprofile0, "adam", "****"); /// order products for one of the customers and performed by a sales person
 
         return business;
+
     }
+
 }
