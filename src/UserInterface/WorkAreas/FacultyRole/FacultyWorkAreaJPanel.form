@@ -91,7 +91,7 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnManageCoursesIdentifyResourceAssetsActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnManageCoursesActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnManageStudentProfiles">
