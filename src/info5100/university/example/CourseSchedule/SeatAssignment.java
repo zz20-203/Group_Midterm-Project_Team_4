@@ -16,6 +16,15 @@ public class SeatAssignment {
     public boolean getLike(){
         return like;
     }
+    
+    public void setGrade(String letter) {
+        this.grade = mapLetter(letter);
+    }
+    
+    public void assignGrade(String letter) {
+        setGrade(letter);
+    }
+
     public void assignSeatToStudent(CourseLoad cl){
         courseload = cl;
     }
@@ -38,8 +47,23 @@ public class SeatAssignment {
     public float GetCourseStudentScore(){
         return getCreditHours()*grade;
     }
-    
-    
-    
+
+    private float mapLetter(String letter) {
+    if (letter == null) return 0f;
+    switch (letter.trim().toUpperCase()) {
+        case "A":  return 4.0f;
+        case "A-": return 3.7f;
+        case "B+": return 3.3f;
+        case "B":  return 3.0f;
+        case "B-": return 2.7f;
+        case "C+": return 2.3f;
+        case "C":  return 2.0f;
+        case "C-": return 1.7f;
+        case "D":  return 1.0f;
+        case "F":  return 0.0f;
+        default:   return 0.0f;
+    }
+    }
 }
+
 

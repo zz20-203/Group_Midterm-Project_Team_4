@@ -5,105 +5,30 @@
  */
 package UserInterface.WorkAreas.AdminRole.ManagePersonnelWorkResp;
 
-
 import Business.Business;
-import Business.Person.Person;
-import Business.Profiles.EmployeeProfile;
-import Business.Profiles.FacultyProfile;
-import Business.Profiles.StudentProfile;
-import Business.UserAccounts.UserAccount;
-import Business.UserAccounts.UserAccountDirectory;
-import UserInterface.WorkAreas.AdminRole.AdministerUserAccountsWorkResp.AdminUserAccount;
-import java.awt.CardLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.List;
-import javax.swing.JOptionPane;
+
+
 import javax.swing.JPanel;
-import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author kal bugrara
  */
 public class ManagePersonsJPanel extends javax.swing.JPanel {
 
+    /**
+     * Creates new form ManageSuppliersJPanel
+     */
     JPanel CardSequencePanel;
     Business business;
 
-    public ManagePersonsJPanel(Business b, JPanel clp) {
+
+    public ManagePersonsJPanel(Business bz, JPanel jp) {
+        CardSequencePanel = jp;
+        this.business = bz;
         initComponents();
-        this.business = b;
-        this.CardSequencePanel = clp;
 
-        
-        UserAccountTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    int selectedRow = UserAccountTable.getSelectedRow();
-                    if (selectedRow >= 0) {
-                        String username = (String) UserAccountTable.getValueAt(selectedRow, 2);
-                        UserAccount ua = business.getUserAccountDirectory().findUserAccount(username);
-                        if (ua != null) {
-                            openAdministerPanel(ua);
-                        }
-                    }
-                }
-            }
-        });
     }
-
-    @Override
-    public void addNotify() {
-        super.addNotify();
-        populateUserAccountTable("");
-    }
-
-    
-    private void populateUserAccountTable(String key) {
-        DefaultTableModel model = (DefaultTableModel) UserAccountTable.getModel();
-        model.setRowCount(0);
-
-        List<UserAccount> accounts = business.getUserAccountDirectory().getUserAccountList();
-        if (accounts == null || accounts.isEmpty()) return;
-
-        for (UserAccount ua : accounts) {
-            if (ua == null || ua.getAssociatedPersonProfile() == null) continue;
-
-            Person person = ua.getAssociatedPersonProfile().getPerson();
-            if (person == null) continue;
-
-            String nuid = person.getPersonId();
-            String name = person.getName();
-            String username = ua.getUserLoginName();
-            String password = ua.getPassword();
-            String category = "";
-
-            if (ua.getAssociatedPersonProfile() instanceof StudentProfile)
-                category = "Student";
-            else if (ua.getAssociatedPersonProfile() instanceof FacultyProfile)
-                category = "Faculty";
-            else if (ua.getAssociatedPersonProfile() instanceof EmployeeProfile)
-                category = "Employee";
-            else category = "Unknown";
-
-            
-            if (key.isEmpty() || nuid.equalsIgnoreCase(key)) {
-                model.addRow(new Object[]{nuid, name, username, password, category});
-            }
-        }
-    }
-    
-        private UserAccount findUserAccountByUsername(String username) {
-        UserAccountDirectory uad = business.getUserAccountDirectory();
-        for (UserAccount ua : uad.getUserAccountList()) {
-            if (ua.getUserLoginName().equals(username)) {
-                return ua;
-            }
-        }
-        return null;
-    }
-   
 
 
     /**
@@ -116,15 +41,9 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         Back = new javax.swing.JButton();
+        Next = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        btnRegister = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        UserAccountTable = new javax.swing.JTable();
-        jLabel9 = new javax.swing.JLabel();
-        btnDelete = new javax.swing.JButton();
-        btnUpdate = new javax.swing.JButton();
-        btnSearchNuid = new javax.swing.JButton();
-        txtSearchNuid = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(0, 153, 153));
         setLayout(null);
@@ -136,75 +55,25 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
             }
         });
         add(Back);
-        Back.setBounds(40, 360, 80, 23);
+        Back.setBounds(20, 260, 76, 32);
+
+        Next.setText("Next >>");
+        Next.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NextActionPerformed(evt);
+            }
+        });
+        add(Next);
+        Next.setBounds(500, 260, 80, 32);
+
+        jLabel1.setText("Name");
+        add(jLabel1);
+        jLabel1.setBounds(20, 60, 190, 16);
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jLabel2.setText("Manage Personnel (HR)");
         add(jLabel2);
-        jLabel2.setBounds(21, 20, 280, 28);
-
-        btnRegister.setText("Register");
-        btnRegister.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegisterActionPerformed(evt);
-            }
-        });
-        add(btnRegister);
-        btnRegister.setBounds(430, 30, 120, 23);
-
-        UserAccountTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "NUID", "Name", "Username", "Password", "Category"
-            }
-        ));
-        UserAccountTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                UserAccountTableMousePressed(evt);
-            }
-        });
-        jScrollPane1.setViewportView(UserAccountTable);
-
-        add(jScrollPane1);
-        jScrollPane1.setBounds(100, 130, 452, 190);
-
-        jLabel9.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        add(jLabel9);
-        jLabel9.setBounds(100, 110, 0, 0);
-
-        btnDelete.setText("Delete");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
-        add(btnDelete);
-        btnDelete.setBounds(260, 360, 90, 23);
-
-        btnUpdate.setText("Update >>");
-        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUpdateActionPerformed(evt);
-            }
-        });
-        add(btnUpdate);
-        btnUpdate.setBounds(470, 360, 110, 23);
-
-        btnSearchNuid.setText("Search by NUID");
-        btnSearchNuid.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchNuidActionPerformed(evt);
-            }
-        });
-        add(btnSearchNuid);
-        btnSearchNuid.setBounds(430, 90, 123, 23);
-        add(txtSearchNuid);
-        txtSearchNuid.setBounds(330, 90, 80, 23);
+        jLabel2.setBounds(21, 20, 550, 29);
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
@@ -215,119 +84,21 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_BackActionPerformed
 
-    private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
+    private void NextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextActionPerformed
         // TODO add your handling code here:
-        AdministerPersonJPanel panel = new AdministerPersonJPanel(business, CardSequencePanel, null, this);
-        CardSequencePanel.add("AdministerPersonJPanel", panel);
-        ((CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
-    }//GEN-LAST:event_btnRegisterActionPerformed
-
-    private void UserAccountTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserAccountTableMousePressed
-
-    }//GEN-LAST:event_UserAccountTableMousePressed
-
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        int selectedRow = UserAccountTable.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(this, "Please select a row to delete.");
-            return;
-        }
-
-        DefaultTableModel model = (DefaultTableModel) UserAccountTable.getModel();
-        String username = (String) model.getValueAt(selectedRow, 2);
-
-        int confirm = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to delete this account?",
-                "Confirm Delete",
-                JOptionPane.YES_NO_OPTION);
-        if (confirm != JOptionPane.YES_OPTION) return;
-
-        UserAccount toRemove = findUserAccountByUsername(username);
-        if (toRemove != null) {
-            business.getUserAccountDirectory().removeUserAccount(toRemove);
-            JOptionPane.showMessageDialog(this, "User account deleted successfully!");
-        } else {
-            JOptionPane.showMessageDialog(this, "Error: Could not find user account.");
-        }
-
-        populateUserAccountTable("");
-    }
-
-    
-        private void openAdministerPanel(UserAccount ua) {
-            AdminUserAccount panel = new AdminUserAccount(business, ua, CardSequencePanel, null);
-            CardSequencePanel.add("AdminUserAccountPanel", panel);
-            ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
-
-    }
         
-    public void refreshTable() {
-        populateUserAccountTable("");
-    
-    }//GEN-LAST:event_btnDeleteActionPerformed
+        AdministerPersonJPanel mppd = new AdministerPersonJPanel(business, CardSequencePanel);
+        CardSequencePanel.add(mppd);
+        ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
 
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        // TODO add your handling code here:
-        int selectedRow = UserAccountTable.getSelectedRow();
+    }//GEN-LAST:event_NextActionPerformed
 
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(this,
-                    "Please select a row to update.",
-                    "No Selection",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        DefaultTableModel model = (DefaultTableModel) UserAccountTable.getModel();
-        String username = (String) model.getValueAt(selectedRow, 2);
-        UserAccount selectedAccount = findUserAccountByUsername(username);
-
-        if (selectedAccount == null) {
-            JOptionPane.showMessageDialog(this,
-                    "User account not found. Please refresh the table.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-    AdministerPersonJPanel panel = new AdministerPersonJPanel(business, CardSequencePanel, selectedAccount, this);
-    CardSequencePanel.add("AdministerPersonJPanel", panel);
-    ((CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
-    }//GEN-LAST:event_btnUpdateActionPerformed
-
-    private void btnSearchNuidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchNuidActionPerformed
-        // TODO add your handling code here:
-        String key = txtSearchNuid.getText().trim();
-        if (key.isEmpty()) refreshTable();
-        else refreshTable(key);
-    }//GEN-LAST:event_btnSearchNuidActionPerformed
-    
-    
-    public void refreshTable(String key) {
-        populateUserAccountTable(key);
-        if (UserAccountTable.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this,
-                    "No record found with NUID: " + key + ". You may register this person.");
-        }
-    }
-    
-    
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Back;
-    private javax.swing.JTable UserAccountTable;
-    private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnRegister;
-    private javax.swing.JButton btnSearchNuid;
-    private javax.swing.JButton btnUpdate;
+    private javax.swing.JButton Next;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField txtSearchNuid;
     // End of variables declaration//GEN-END:variables
 
-    
 }
-
-

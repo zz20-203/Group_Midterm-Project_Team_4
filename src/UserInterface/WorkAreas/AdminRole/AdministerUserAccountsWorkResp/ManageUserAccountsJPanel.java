@@ -38,21 +38,32 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
     public void refreshTable() {
 
 //clear supplier table
-     DefaultTableModel model = (DefaultTableModel) UserAccountTable.getModel();
-        model.setRowCount(0); // 
+        int rc = UserAccountTable.getRowCount();
+        int i;
+        for (i = rc - 1; i >= 0; i--) {
+            ((DefaultTableModel) UserAccountTable.getModel()).removeRow(i);
+        }
+
+
 
         UserAccountDirectory uad = business.getUserAccountDirectory();
 
+       
+
         for (UserAccount ua : uad.getUserAccountList()) {
-            Object[] row = new Object[4];
-            row[0] = ua.getUserLoginName();
-            row[1] = ua.getStatus();
-            row[2] = ua.getLastAccessed() == null ? "N/A" : ua.getLastAccessed().toString();
-            row[3] = ua.getLastUpdated() == null ? "N/A" : ua.getLastUpdated().toString();
-            model.addRow(row);
+
+            Object[] row = new Object[5];
+            row[0] = ua;
+ //           row[1] = ua.getStatus(); //complete this..
+ //           row[2] = ua.getLastUpdated()
+ //           row[3] = 
+
+            ((DefaultTableModel) UserAccountTable.getModel()).addRow(row);
         }
 
     }
+
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -68,7 +79,6 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         UserAccountTable = new javax.swing.JTable();
-        btnDelete = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(0, 153, 153));
         setLayout(null);
@@ -80,7 +90,7 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
             }
         });
         add(Back);
-        Back.setBounds(30, 300, 80, 23);
+        Back.setBounds(30, 300, 76, 32);
 
         Next.setText("Next >>");
         Next.addActionListener(new java.awt.event.ActionListener() {
@@ -89,7 +99,7 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
             }
         });
         add(Next);
-        Next.setBounds(500, 300, 80, 23);
+        Next.setBounds(500, 300, 80, 32);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel1.setText("User Accounts");
@@ -99,7 +109,7 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
         jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jLabel2.setText("Manage User Accounts");
         add(jLabel2);
-        jLabel2.setBounds(21, 20, 550, 28);
+        jLabel2.setBounds(21, 20, 550, 29);
 
         UserAccountTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -121,15 +131,6 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
 
         add(jScrollPane1);
         jScrollPane1.setBounds(30, 110, 550, 130);
-
-        btnDelete.setText("Delete");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
-        add(btnDelete);
-        btnDelete.setBounds(280, 300, 72, 23);
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
@@ -142,87 +143,36 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
 
     private void NextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextActionPerformed
         // TODO add your handling code here:
-        if (selecteduseraccount == null) return;
-
-        
-        AdminUserAccount panel = new AdminUserAccount(business, selecteduseraccount, CardSequencePanel, this);
-        CardSequencePanel.add("AdminUserAccountPanel", panel);
+        if(selecteduseraccount==null) return;
+        AdminUserAccount mppd = new AdminUserAccount(selecteduseraccount, CardSequencePanel);
+        CardSequencePanel.add(mppd);
         ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
-    
+
     }//GEN-LAST:event_NextActionPerformed
 
     private void UserAccountTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserAccountTableMousePressed
         // Extracts the row (uaser account) in the table that is selected by the user
-        int selectedRow = UserAccountTable.getSelectedRow();
-        if (selectedRow < 0) return;
+        int size = UserAccountTable.getRowCount();
+        int selectedrow = UserAccountTable.getSelectionModel().getLeadSelectionIndex();
 
-        String username = (String) UserAccountTable.getValueAt(selectedRow, 0);
-
-        for (UserAccount ua : business.getUserAccountDirectory().getUserAccountList()) {
-            if (ua.getUserLoginName().equals(username)) {
-                selecteduseraccount = ua; 
-                break;
-        
-            }
-            }    
-    }//GEN-LAST:event_UserAccountTableMousePressed
-
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:                                      
-        int selectedRow = UserAccountTable.getSelectedRow();
-
-        if (selectedRow < 0) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Please select a user account to delete.",
-                    "No Selection",
-                    javax.swing.JOptionPane.WARNING_MESSAGE);
+        if (selectedrow < 0 || selectedrow > size - 1) {
             return;
         }
-
-        String username = (String) UserAccountTable.getValueAt(selectedRow, 0);
-
-        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to delete the user account: " + username + "?",
-                "Confirm Delete",
-                javax.swing.JOptionPane.YES_NO_OPTION);
-
-        if (confirm != javax.swing.JOptionPane.YES_OPTION) return;
-
-        java.util.Iterator<UserAccount> iterator = business.getUserAccountDirectory().getUserAccountList().iterator();
-        boolean found = false;
-
-        while (iterator.hasNext()) {
-            UserAccount ua = iterator.next();
-            if (ua.getUserLoginName().equalsIgnoreCase(username)) {
-                iterator.remove();
-                found = true;
-                break;
-            }
-        }
-
-        if (found) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "User account '" + username + "' deleted successfully!");
-        } else {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Error: Could not find matching UserAccount in directory.",
-                    "Delete Failed",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
-        }
-
-        selecteduseraccount = null; 
-        refreshTable();
+        selecteduseraccount = (UserAccount) UserAccountTable.getValueAt(selectedrow, 0);
+        if (selecteduseraccount == null) {
+            return;
+        
+        
+            
+    }//GEN-LAST:event_UserAccountTableMousePressed
     
-
-    }//GEN-LAST:event_btnDeleteActionPerformed
-    
+    }
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Back;
     private javax.swing.JButton Next;
     private javax.swing.JTable UserAccountTable;
-    private javax.swing.JButton btnDelete;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;

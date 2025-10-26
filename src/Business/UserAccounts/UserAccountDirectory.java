@@ -54,8 +54,4 @@ public class UserAccountDirectory {
      {
          return useraccountlist;
      }
-     
-     public void removeUserAccount(UserAccount ua) {
-         useraccountlist.remove(ua);
-    }
 }
