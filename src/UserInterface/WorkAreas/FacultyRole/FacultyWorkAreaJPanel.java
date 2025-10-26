@@ -11,6 +11,7 @@
 package UserInterface.WorkAreas.FacultyRole;
 
 import Business.Business;
+import Business.UserAccounts.UserAccount; // Import UserAccount
 import javax.swing.JPanel;
 
 /**
@@ -19,19 +20,21 @@ import javax.swing.JPanel;
  */
 public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
 
-    javax.swing.JPanel CardSequencePanel;
-    Business business;
+    private JPanel CardSequencePanel;
+    private Business business;
+    private UserAccount userAccount; // Store the logged-in user
 
     /**
      * Creates new form UnitRiskWorkArea
+     * @param b Business object
+     * @param ua The logged-in UserAccount
+     * @param clp The CardLayout panel
      */
-
-    public FacultyWorkAreaJPanel(Business b, JPanel clp) {
-
-        business = b;
-        this.CardSequencePanel = clp;
+    public FacultyWorkAreaJPanel(Business b, UserAccount ua, JPanel clp) {
         initComponents();
-
+        this.business = b;
+        this.userAccount = ua;
+        this.CardSequencePanel = clp;
     }
 
     /**
@@ -58,7 +61,7 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
         btnManageCourses.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnManageCourses.setMaximumSize(new java.awt.Dimension(200, 40));
         btnManageCourses.setMinimumSize(new java.awt.Dimension(20, 23));
-        btnManageCourses.setPreferredSize(new java.awt.Dimension(240, 30));
+        btnManageCourses.setPreferredSize(new java.awt.Dimension(240, 40));
         btnManageCourses.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnManageCoursesActionPerformed(evt);
@@ -72,7 +75,7 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
         btnManageStudentProfiles.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnManageStudentProfiles.setMaximumSize(new java.awt.Dimension(200, 40));
         btnManageStudentProfiles.setMinimumSize(new java.awt.Dimension(20, 20));
-        btnManageStudentProfiles.setPreferredSize(new java.awt.Dimension(240, 25));
+        btnManageStudentProfiles.setPreferredSize(new java.awt.Dimension(240, 40));
         btnManageStudentProfiles.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnManageStudentProfilesActionPerformed(evt);
@@ -86,7 +89,7 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
         btnMyProfile.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnMyProfile.setMaximumSize(new java.awt.Dimension(145, 40));
         btnMyProfile.setMinimumSize(new java.awt.Dimension(20, 20));
-        btnMyProfile.setPreferredSize(new java.awt.Dimension(240, 25));
+        btnMyProfile.setPreferredSize(new java.awt.Dimension(240, 40));
         btnMyProfile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMyProfileIdentifyEventsActionPerformed(evt);
@@ -100,7 +103,7 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
         btnPerformanceReports.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnPerformanceReports.setMaximumSize(new java.awt.Dimension(200, 40));
         btnPerformanceReports.setMinimumSize(new java.awt.Dimension(20, 20));
-        btnPerformanceReports.setPreferredSize(new java.awt.Dimension(240, 25));
+        btnPerformanceReports.setPreferredSize(new java.awt.Dimension(240, 40));
         btnPerformanceReports.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPerformanceReportsActionPerformed(evt);
@@ -148,13 +151,8 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
 
     private void btnManageCoursesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCoursesActionPerformed
         
-        // Create an instance of the ManageCoursesJPanel
         ManageCoursesJPanel manageCoursesPanel = new ManageCoursesJPanel(business, CardSequencePanel);
-        
-        // Add the new panel to the CardSequencePanel
         CardSequencePanel.add("ManageCoursesJPanel", manageCoursesPanel);
-        
-        // Switch to the new panel
         java.awt.CardLayout layout = (java.awt.CardLayout) CardSequencePanel.getLayout();
         layout.show(CardSequencePanel, "ManageCoursesJPanel");
 
@@ -162,24 +160,19 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
 
     private void btnManageStudentProfilesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageStudentProfilesActionPerformed
         // TODO add your handling code here:
-        
-  
     }//GEN-LAST:event_btnManageStudentProfilesActionPerformed
 
     private void btnMyProfileIdentifyEventsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyProfileIdentifyEventsActionPerformed
-        // TODO add your handling code here:
-        CardSequencePanel.removeAll();
-        //    IdentifyEventTypes iet= new IdentifyEventTypes(businessunit, CardSequencePanel);
-
-        //    CardSequencePanel.add("IdentifyEventTypes", iet);
-        ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
-        //((java.awt.CardLayout)CardSequencePanel.getLayout()).show(CardSequencePanel, "IdentifyEventTypes");
-}//GEN-LAST:event_btnMyProfileIdentifyEventsActionPerformed
+        // Create an instance of the profile panel, passing the user's info
+        MyProfileFacultyJPanel myProfilePanel = new MyProfileFacultyJPanel(CardSequencePanel, userAccount);
+        CardSequencePanel.add("MyProfileFacultyJPanel", myProfilePanel);
+        ((java.awt.CardLayout) CardSequencePanel.getLayout()).show(CardSequencePanel, "MyProfileFacultyJPanel");
+    }//GEN-LAST:event_btnMyProfileIdentifyEventsActionPerformed
 
     private void btnPerformanceReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPerformanceReportsActionPerformed
         // TODO add your handling code here:
 
-}//GEN-LAST:event_btnPerformanceReportsActionPerformed
+    }//GEN-LAST:event_btnPerformanceReportsActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
