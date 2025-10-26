@@ -91,6 +91,7 @@ public class SignUpJPanel extends javax.swing.JPanel {
         lblConfirmPassword.setText("Confirm Password");
 
         btnCreate.setText("Create the Student Account");
+        btnCreate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCreateActionPerformed(evt);

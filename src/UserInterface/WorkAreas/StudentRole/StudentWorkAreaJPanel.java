@@ -58,6 +58,7 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
         btnCourseWork.setForeground(new java.awt.Color(255, 255, 255));
         btnCourseWork.setText("Course Work");
         btnCourseWork.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnCourseWork.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCourseWork.setMaximumSize(new java.awt.Dimension(200, 40));
         btnCourseWork.setMinimumSize(new java.awt.Dimension(20, 23));
         btnCourseWork.setPreferredSize(new java.awt.Dimension(240, 30));
@@ -72,6 +73,7 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
         btnManageProfile.setForeground(new java.awt.Color(255, 255, 255));
         btnManageProfile.setText("Manage Profile");
         btnManageProfile.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnManageProfile.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnManageProfile.setMaximumSize(new java.awt.Dimension(200, 40));
         btnManageProfile.setMinimumSize(new java.awt.Dimension(20, 20));
         btnManageProfile.setPreferredSize(new java.awt.Dimension(240, 25));
@@ -86,6 +88,7 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
         btnGraduationAudit.setForeground(new java.awt.Color(255, 255, 255));
         btnGraduationAudit.setText("Graduation Audit");
         btnGraduationAudit.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnGraduationAudit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGraduationAudit.setMaximumSize(new java.awt.Dimension(200, 40));
         btnGraduationAudit.setMinimumSize(new java.awt.Dimension(20, 20));
         btnGraduationAudit.setPreferredSize(new java.awt.Dimension(240, 25));
@@ -100,6 +103,7 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
         btnRegistration.setForeground(new java.awt.Color(255, 255, 255));
         btnRegistration.setText("Registration");
         btnRegistration.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnRegistration.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRegistration.setMaximumSize(new java.awt.Dimension(200, 40));
         btnRegistration.setMinimumSize(new java.awt.Dimension(20, 20));
         btnRegistration.setPreferredSize(new java.awt.Dimension(240, 25));
@@ -117,6 +121,7 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
         btnTranscript.setForeground(new java.awt.Color(255, 255, 255));
         btnTranscript.setText("Transcript");
         btnTranscript.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnTranscript.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnTranscript.setMaximumSize(new java.awt.Dimension(200, 40));
         btnTranscript.setMinimumSize(new java.awt.Dimension(20, 20));
         btnTranscript.setPreferredSize(new java.awt.Dimension(240, 25));

@@ -93,6 +93,7 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
         });
 
         btnBack.setText("<< Back");
+        btnBack.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBackActionPerformed(evt);
@@ -152,6 +153,7 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
         lblEnrolled.setText("My Enrollments");
 
         btnDrop.setText("Drop Course");
+        btnDrop.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnDrop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDropActionPerformed(evt);
@@ -159,6 +161,7 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
         });
 
         btnEnroll.setText("Enroll Course");
+        btnEnroll.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnEnroll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEnrollActionPerformed(evt);

@@ -102,7 +102,9 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         actionsidejpanel.setMinimumSize(new java.awt.Dimension(200, 200));
 
         btnLogin.setText("Login");
+        btnLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnLogin.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnLogin.setPreferredSize(new java.awt.Dimension(70, 25));
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 LoginButtonActionPerformed(evt);
@@ -111,6 +113,7 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
 
         jLabel1.setText("User Name");
 
+        UserNameTextField.setText("admin");
         UserNameTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 UserNameTextFieldActionPerformed(evt);
@@ -120,12 +123,17 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         jLabel2.setText("Password");
 
         btnSignUp.setText("Sign up");
+        btnSignUp.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSignUp.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnSignUp.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnSignUp.setPreferredSize(new java.awt.Dimension(70, 25));
         btnSignUp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSignUpLoginButtonActionPerformed(evt);
             }
         });
+
+        PasswordTextField.setText("****");
 
         javax.swing.GroupLayout actionsidejpanelLayout = new javax.swing.GroupLayout(actionsidejpanel);
         actionsidejpanel.setLayout(actionsidejpanelLayout);
@@ -139,7 +147,7 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(PasswordTextField)
                     .addGroup(actionsidejpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(btnLogin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnLogin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
                         .addComponent(btnSignUp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         actionsidejpanelLayout.setVerticalGroup(
@@ -156,7 +164,7 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSignUp)
+                .addComponent(btnSignUp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
