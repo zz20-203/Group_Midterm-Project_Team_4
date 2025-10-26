@@ -6,6 +6,7 @@
 package Business;
 
 import Business.Profiles.EmployeeProfile;
+import Business.Profiles.FacultyProfile;
 import Business.Profiles.Profile;
 import Business.Profiles.StudentProfile;
 import util.student.DemoSeeder;
@@ -67,8 +68,6 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         CourseSchedule spring = dept.newCourseSchedule("Spring2026");
         spring.newCourseOffer(c6205.getCourseNumber()).generatSeats(30);
         spring.newCourseOffer(c5100.getCourseNumber()).generatSeats(30);
-        
-
     }
 
     public void insert(JPanel jpanel) {
@@ -227,14 +226,14 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
 
         }
 
- /*      if (profile instanceof FacultyProfile) {
+        if (profile instanceof FacultyProfile) {
             facultyworkarea = new FacultyWorkAreaJPanel(business, CardSequencePanel);
             CardSequencePanel.removeAll();
             CardSequencePanel.add("faculty", facultyworkarea);
             ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
 
         }
-*/
+
 
     }//GEN-LAST:event_LoginButtonActionPerformed
 
