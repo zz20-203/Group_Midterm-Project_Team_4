@@ -14,14 +14,13 @@ import info5100.university.example.Department.Department;
 import javax.swing.JPanel;                                
 import javax.swing.table.DefaultTableModel;
 import java.awt.CardLayout;
+import javax.swing.JOptionPane;
 
 public class StudentRegistrationJPanel extends javax.swing.JPanel {
     private final JPanel workArea;
     private final Department dept;
     private final String personId;
-    
-    //use this helper for showing the message for selection status on lblMsg
-    private void setStatus(String s) { lblMsg.setText(s == null ? " " : s); }
+
     
     //get schedule for a semester
     private CourseSchedule scheduleFor(String sem) {
@@ -33,13 +32,22 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
         return co.getEmptySeatCount();
     }
     
+     private boolean alreadyEnrolled(CourseLoad cl, String courseNumber) {
+        if (cl == null) return false;
+        for (SeatAssignment sa : cl.getSeatAssignments()) {
+            CourseOffer co = sa.getCourseOffer();
+            if (co != null && courseNumber.equals(co.getCourseNumber())) return true;
+        }
+        return false;
+    }
+
+    
     public StudentRegistrationJPanel(JPanel workArea, Department dept, String personId) {
         this.workArea = workArea;
         this.dept = dept;
         this.personId = personId;
         
         initComponents();
-        lblMsg.setText(" "); //keep status bar visible even when empty.
         
         //initialize the semester list in comboBox
         cmbSemester.removeAllItems();
@@ -72,7 +80,6 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
         lblEnrolled = new javax.swing.JLabel();
         btnDrop = new javax.swing.JButton();
         btnEnroll = new javax.swing.JButton();
-        lblMsg = new javax.swing.JLabel();
 
         lblSemester.setText("Semester");
 
@@ -156,9 +163,6 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
             }
         });
 
-        lblMsg.setBackground(new java.awt.Color(204, 204, 204));
-        lblMsg.setText("\" \"");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -172,7 +176,7 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
                         .addComponent(cmbSemester, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 744, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
@@ -180,9 +184,7 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addComponent(btnDrop)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnEnroll)
-                                .addGap(18, 18, 18)
-                                .addComponent(lblMsg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addComponent(btnEnroll))))
                     .addComponent(lblEnrolled)
                     .addComponent(lblAvailable))
                 .addContainerGap(74, Short.MAX_VALUE))
@@ -198,7 +200,7 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
                 .addComponent(lblAvailable)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addGap(27, 27, 27)
                 .addComponent(lblEnrolled)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -206,7 +208,6 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnDrop)
                     .addComponent(btnEnroll)
-                    .addComponent(lblMsg)
                     .addComponent(btnBack))
                 .addGap(40, 40, 40))
         );
@@ -230,65 +231,80 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
     private void btnEnrollActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnrollActionPerformed
         // TODO add your handling code here:
         int row = tblAvailable1.getSelectedRow();
-        if (row < 0) { setStatus("Select a course to enroll."); return; }
+        if (row < 0) { 
+            JOptionPane.showMessageDialog(this, "Select an offering to enroll.", "No selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
         String sem  = String.valueOf(cmbSemester.getSelectedItem());
         String cnum = String.valueOf(tblAvailable1.getValueAt(row, 0));
-
-        CourseSchedule cs = scheduleFor(sem);
-        if (cs == null) { setStatus("No schedule for " + sem); return; }
         
-        //find the offer by course number
-        CourseOffer co = cs.getCourseOfferByNumber(cnum);
-        if (co == null) { setStatus("Course not found."); return; }
-
-        if (seatsLeft(co) <= 0) { setStatus("No seats left."); return; }
-
-        StudentProfile sp = getOrCreateModelStudent();
-        
-        //Ensure there is a CourseLoad for this semester, then enroll
-        CourseLoad cl = sp.getCourseLoadBySemester(sem);
+        int rc = JOptionPane.showConfirmDialog(
+                this, "Enroll in " + cnum + " for " + sem + "?", "Confirm enrollment", JOptionPane.YES_NO_OPTION);
+        if (rc != JOptionPane.YES_OPTION) 
+            return;
+        //do the enrollment function here
+        info5100.university.example.Persona.StudentProfile sp = getOrCreateModelStudent();
+        info5100.university.example.CourseSchedule.CourseLoad cl = sp.getCourseLoadBySemester(sem);
         if (cl == null) cl = sp.newCourseLoad(sem);
         
-        SeatAssignment sa = cl.newSeatAssignment(co);
-        if (sa == null) { setStatus("Seat could not be assigned."); return; }
+        info5100.university.example.CourseSchedule.CourseSchedule cs = dept.newCourseSchedule(sem);
+        info5100.university.example.CourseSchedule.CourseOffer co = cs.getCourseOffer(String.valueOf(cnum));
+        if (co == null) {
+            JOptionPane.showMessageDialog(this, "That offering is no longer available.", "Not found", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (co.getEmptySeat() == null) {
+            JOptionPane.showMessageDialog(this, "No seats left in " + cnum + ".", "Full", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         
-        
-        setStatus("Enrolled in " + cnum + " (" + sem + ").");
+        cl.newSeatAssignment(co);
+            
+        JOptionPane.showMessageDialog(this, "Enrolled in " + cnum + " (" + sem + ").", "Success", JOptionPane.INFORMATION_MESSAGE);
         loadAvailable();
-        loadEnrolled();
-        
+        loadEnrolled();  // refresh both tables
+     
     }//GEN-LAST:event_btnEnrollActionPerformed
 
     private void btnDropActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDropActionPerformed
         // TODO add your handling code here:
         int row = tblEnrolled.getSelectedRow();
-        if (row < 0) { setStatus("Select a course to drop."); return; }
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Select a course to drop.", "No selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
         String sem  = String.valueOf(cmbSemester.getSelectedItem());
         String cnum = String.valueOf(tblEnrolled.getValueAt(row, 0));
 
-        CourseSchedule cs = scheduleFor(sem);
-        if (cs == null) { setStatus("No schedule for " + sem); return; }
-
-        CourseOffer co = cs.getCourseOfferByNumber(cnum);
-        if (co == null) { setStatus("Course not found."); return; }
-
-        StudentProfile sp = getOrCreateModelStudent();
-        CourseLoad cl = sp.getCourseLoadBySemester(sem);
-        if (cl == null) { setStatus("Nothing to drop."); return; }
+        int rc = JOptionPane.showConfirmDialog(
+                this, "Drop " + cnum + " from " + sem + "?", "Confirm drop",JOptionPane.YES_NO_OPTION
+        );
+        if (rc != JOptionPane.YES_OPTION) return;
         
-        // find the seat assignment for this offer
-        SeatAssignment target = null;
-        for (SeatAssignment sa : new java.util.ArrayList<>(cl.getSeatAssignments())) {
-            if (sa.getCourseOffer() == co) { target = sa; break; }
+        // Do the drop function
+        info5100.university.example.Persona.StudentProfile sp = getOrCreateModelStudent();
+        info5100.university.example.CourseSchedule.CourseLoad cl = sp.getCourseLoadBySemester(sem);
+        if (cl == null) {
+            JOptionPane.showMessageDialog(this, "You are not enrolled this term.", "Nothing to drop", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-        if (target == null) { setStatus("You are not enrolled in " + cnum + "."); return; }
-        
-        // remove from this semester’s courseload
-        cl.getSeatAssignments().remove(target);
 
-        setStatus("Dropped " + cnum + " (" + sem + ").");
+        info5100.university.example.CourseSchedule.SeatAssignment toRemove = null;
+        for (info5100.university.example.CourseSchedule.SeatAssignment sa : cl.getSeatAssignments()) {
+            String number = sa.getCourseOffer().getSubjectCourse().getCourseNumber();
+            if (cnum.equals(number)) { toRemove = sa; break; }
+        }
+        if (toRemove == null) {
+            JOptionPane.showMessageDialog(this, "Could not find that enrollment.", "Not found", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        //remove the seat
+        cl.getSeatAssignments().remove(toRemove);
+        
+        JOptionPane.showMessageDialog(this, "Dropped " + cnum + " (" + sem + ").", "Success", JOptionPane.INFORMATION_MESSAGE);
+
         loadAvailable();
         loadEnrolled();
         
@@ -304,7 +320,6 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblAvailable;
     private javax.swing.JLabel lblEnrolled;
-    private javax.swing.JLabel lblMsg;
     private javax.swing.JLabel lblSemester;
     private javax.swing.JTable tblAvailable1;
     private javax.swing.JTable tblEnrolled;
@@ -317,17 +332,15 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
 
         String sem = String.valueOf(cmbSemester.getSelectedItem());
         CourseSchedule cs = scheduleFor(sem);
-        if (cs == null) { setStatus("No schedule for " + sem); return; }
+        if (cs == null) return;
 
-        // common API: cs.getSchedule().values() returns the CourseOffers
         for (CourseOffer co : cs.getCourseOfferList()) {
             String num  = co.getCourseNumber();
             String name = co.getSubjectCourse().getName();
             int left    = seatsLeft(co);
-            m.addRow(new Object[]{num, name, left});
+            m.addRow(new Object[]{ num, name, left });
         }
-        setStatus(" ");
-        }
+    }
 
     //populate My Enrollments for the selected semester
     private void loadEnrolled() {

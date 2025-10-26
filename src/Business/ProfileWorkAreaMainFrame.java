@@ -8,6 +8,7 @@ package Business;
 import Business.Profiles.EmployeeProfile;
 import Business.Profiles.Profile;
 import Business.Profiles.StudentProfile;
+import util.student.DemoSeeder;
 
 import Business.UserAccounts.UserAccount;
 import Business.UserAccounts.UserAccountDirectory;
@@ -21,6 +22,7 @@ import UserInterface.WorkAreas.AdminRole.AdminRoleWorkAreaJPanel;
 import UserInterface.WorkAreas.FacultyRole.FacultyWorkAreaJPanel;
 import UserInterface.WorkAreas.StudentRole.SignUpJPanel;
 import UserInterface.WorkAreas.StudentRole.StudentWorkAreaJPanel;
+import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -36,14 +38,21 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
     /**
      * Creates new form PricingMainFrame
      */
+    public static final String HOME_CARD = "studentHome";
 
     public ProfileWorkAreaMainFrame() {
         initComponents();
         CardSequencePanel.setLayout(new java.awt.CardLayout());
         business = ConfigureABusiness.initialize();
         
-        dept = new info5100.university.example.Department.Department("Information System");
-        business.setModelDepartment(dept); 
+        dept = business.getModelDepartment();
+        if (dept == null) {
+            dept = new info5100.university.example.Department.Department("Information System");
+            business.setModelDepartment(dept);
+        }
+
+        // Seed one demo student + model data
+        DemoSeeder.seedStudent(business, dept);
         
         CourseCatalog cc = dept.getCourseCatalog();
         
@@ -102,7 +111,11 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
 
         jLabel1.setText("User Name");
 
-        UserNameTextField.setText("admin");
+        UserNameTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UserNameTextFieldActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Password");
 
@@ -124,9 +137,8 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(UserNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
                     .addComponent(jLabel2)
-                    .addGroup(actionsidejpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(btnSignUp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
-                        .addComponent(btnLogin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnSignUp, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                    .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(PasswordTextField)))
         );
         actionsidejpanelLayout.setVerticalGroup(
@@ -140,10 +152,10 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4)
                 .addComponent(PasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSignUp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSignUp)
                 .addContainerGap())
         );
 
@@ -195,13 +207,14 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         if (profile instanceof StudentProfile) {
             String personId = useraccount.getPersonId();
 
-            StudentWorkAreaJPanel studentPanel =
-                    new StudentWorkAreaJPanel(CardSequencePanel, personId, dept);
+         // Build the student's home (menu) panel (4-arg ctor!)
+        StudentWorkAreaJPanel studentPanel =
+            new StudentWorkAreaJPanel(CardSequencePanel, dept, personId, HOME_CARD);
 
-            CardSequencePanel.removeAll();
-            CardSequencePanel.add("student", studentPanel);
-            ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
-            return;
+        // No local variable here; use the class constant we defined above
+        CardSequencePanel.add(HOME_CARD, studentPanel);
+        ((CardLayout) CardSequencePanel.getLayout()).show(CardSequencePanel, HOME_CARD);
+        return;
 
         }
 
@@ -222,6 +235,10 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         CardSequencePanel.add("signup", p);
         ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
     }//GEN-LAST:event_btnSignUpLoginButtonActionPerformed
+
+    private void UserNameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserNameTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_UserNameTextFieldActionPerformed
 
     /**
      * @param args the command line arguments
