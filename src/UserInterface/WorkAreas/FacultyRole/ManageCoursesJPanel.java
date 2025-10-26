@@ -22,7 +22,7 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
 
     private JPanel CardSequencePanel;
     private Business business;
-    private Department department;
+    // private Department department; 
     private Course selectedCourse;
 
     /**
@@ -32,24 +32,26 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
         initComponents();
         this.business = b;
         this.CardSequencePanel = clp;
-        this.department = business.getModelDepartment();
         populateTable();
     }
-    
-    // Make this public so it can be called from other panels
+
     public void populateTable() {
         DefaultTableModel model = (DefaultTableModel) tblCourse.getModel();
         model.setRowCount(0); // Clear the table before populating
         selectedCourse = null; // Reset selection
 
-        if (department != null && department.getCourseCatalog() != null) {
-            for (Course course : department.getCourseCatalog().getCourseList()) {
-                Object[] row = new Object[4];
-                row[0] = course.getCourseNumber();
-                row[1] = course.getName();
-                row[2] = course.getCredits();
-                row[3] = department.getName();
-                model.addRow(row);
+        // Iterate through every department in the business
+        for (Department dept : business.getDepartmentList().getDepartments()) {
+            if (dept.getCourseCatalog() != null) {
+                // For each department, iterate through its courses
+                for (Course course : dept.getCourseCatalog().getCourseList()) {
+                    Object[] row = new Object[4];
+                    row[0] = course.getCourseNumber();
+                    row[1] = course.getName();
+                    row[2] = course.getCredits();
+                    row[3] = dept.getName();
+                    model.addRow(row);
+                }
             }
         }
     }
@@ -79,6 +81,7 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
         lblTableTitle.setText("Courses");
 
         btnDelete.setText("Delete");
+        btnDelete.setPreferredSize(new java.awt.Dimension(100, 23));
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteActionPerformed(evt);
@@ -89,6 +92,7 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
         lblTitle.setText("Manage Courses");
 
         btnBack.setText("<< Back");
+        btnBack.setMinimumSize(new java.awt.Dimension(100, 23));
         btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBackActionPerformed(evt);
@@ -96,6 +100,7 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
         });
 
         btnEdit.setText("Next >>");
+        btnEdit.setPreferredSize(new java.awt.Dimension(100, 23));
         btnEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditActionPerformed(evt);
@@ -118,14 +123,11 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        tblCourse.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblCourseMouseClicked(evt);
-            }
-        });
         jScrollPane1.setViewportView(tblCourse);
 
         btnNewCourse.setText("New");
+        btnNewCourse.setMaximumSize(new java.awt.Dimension(100, 23));
+        btnNewCourse.setPreferredSize(new java.awt.Dimension(100, 23));
         btnNewCourse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNewCourseActionPerformed(evt);
@@ -148,7 +150,7 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
                                 .addComponent(lblTableTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(layout.createSequentialGroup()
-                                    .addComponent(btnBack)
+                                    .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(390, 390, 390)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(btnNewCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -166,12 +168,12 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(60, 60, 60)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnBack)
-                    .addComponent(btnEdit))
+                    .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(btnNewCourse)
+                .addComponent(btnNewCourse, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16)
-                .addComponent(btnDelete)
+                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(79, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -194,19 +196,29 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
             return;
         }
 
-        // Delete associated objects too
-        int offersDeletedCount = 0;
-        for (CourseSchedule schedule : department.getMastercoursecatalog().values()) {
-            List<CourseOffer> offers = schedule.getCourseOfferList();
-            boolean removed = offers.removeIf(offer -> offer.getCourseNumber().equals(selectedCourse.getCourseNumber()));
-            if(removed) offersDeletedCount++;
+        // We must find which department the course belongs to in order to delete it.
+        Department ownerDept = null;
+        for (Department dept : business.getDepartmentList().getDepartments()) {
+            if (dept.getCourseCatalog().getCourseByNumber(selectedCourse.getCourseNumber()) != null) {
+                ownerDept = dept;
+                break;
+            }
         }
 
-        // Delete the course from the main catalog
-        department.getCourseCatalog().getCourseList().remove(selectedCourse);
-        JOptionPane.showMessageDialog(this,
-            "Course '" + selectedCourse.getName() + "' deleted successfully.\n" +
-            offersDeletedCount + " associated course offering(s) were also removed.");
+        if (ownerDept != null) {
+            // Delete associated objects
+            int offersDeletedCount = 0;
+            for (CourseSchedule schedule : ownerDept.getMastercoursecatalog().values()) {
+                boolean removed = schedule.getCourseOfferList().removeIf(offer -> offer.getCourseNumber().equals(selectedCourse.getCourseNumber()));
+                if(removed) offersDeletedCount++;
+            }
+            // Delete the course from the catalog
+            ownerDept.getCourseCatalog().getCourseList().remove(selectedCourse);
+            JOptionPane.showMessageDialog(this,
+                "Course '" + selectedCourse.getName() + "' deleted successfully.\n" +
+                offersDeletedCount + " associated course offering(s) were also removed.");
+        }
+        
         populateTable(); // Refresh the table
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -221,15 +233,21 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Please select a course from the table to view/edit.", "No Selection", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
-        EditCourseJPanel editPanel = new EditCourseJPanel(CardSequencePanel, business, selectedCourse, this); 
+
+        // The 'false' flag indicates we are in "Edit Mode"
+        EditCourseJPanel editPanel = new EditCourseJPanel(CardSequencePanel, business, selectedCourse, this, false);
         CardSequencePanel.add("EditCourseJPanel", editPanel);
         ((java.awt.CardLayout) CardSequencePanel.getLayout()).show(CardSequencePanel, "EditCourseJPanel");
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnNewCourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewCourseActionPerformed
-        // Functionality to create a new course would go here.
-        JOptionPane.showMessageDialog(this, "New Course functionality is not yet implemented.");
+        // Create a temporary, blank course object to be populated by the form
+        Course newCourse = new Course("", "", 0);
+        
+        // The 'true' flag indicates we are in "New Mode"
+        EditCourseJPanel createPanel = new EditCourseJPanel(CardSequencePanel, business, newCourse, this, true);
+        CardSequencePanel.add("CreateCourseJPanel", createPanel);
+        ((java.awt.CardLayout) CardSequencePanel.getLayout()).show(CardSequencePanel, "CreateCourseJPanel");
     }//GEN-LAST:event_btnNewCourseActionPerformed
 
     private void tblCourseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCourseMouseClicked
@@ -240,7 +258,15 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
         }
         
         String courseNumber = (String) tblCourse.getValueAt(selectedRow, 0);
-        selectedCourse = department.getCourseCatalog().getCourseByNumber(courseNumber);
+        
+        // Since the table shows all courses, we must search all departments to find the selected one.
+        for (Department dept : business.getDepartmentList().getDepartments()) {
+            Course foundCourse = dept.getCourseCatalog().getCourseByNumber(courseNumber);
+            if (foundCourse != null) {
+                selectedCourse = foundCourse;
+                return; // Exit once found
+            }
+        }
     }//GEN-LAST:event_tblCourseMouseClicked
 
 

@@ -20,24 +20,59 @@ public class EditCourseJPanel extends javax.swing.JPanel {
 
     private JPanel CardSequencePanel;
     private Business business;
-    private Department department;
+    private Department originalDepartment;
     private Course course;
-    private ManageCoursesJPanel manageCoursesPanel; // Reference to the previous panel
+    private ManageCoursesJPanel manageCoursesPanel;
+    private boolean isNewMode;
 
     /**
-     * Creates new form EditCourseJPanel
+     * Creates new form EditCourseJPanel, capable of both Creating and Editing.
+     * @param clp The main panel with CardLayout
+     * @param b The main Business object
+     * @param c The Course to be edited or the new blank Course object
+     * @param mcp The calling panel (ManageCoursesJPanel)
+     * @param isNew A flag to determine if this is for a new course (true) or editing an existing one (false)
      */
-    public EditCourseJPanel(JPanel clp, Business b, Course c, ManageCoursesJPanel mcp) {
+    public EditCourseJPanel(JPanel clp, Business b, Course c, ManageCoursesJPanel mcp, boolean isNew) {
         initComponents();
         this.CardSequencePanel = clp;
         this.business = b;
         this.course = c;
-        // The department this course belongs to is the currently modeled one.
-        this.department = b.getModelDepartment(); 
         this.manageCoursesPanel = mcp;
+        this.isNewMode = isNew;
         
+        // Find the original department of the course for editing purposes
+        if (!isNew) {
+            for(Department d : business.getDepartmentList().getDepartments()){
+                if(d.getCourseCatalog().getCourseByNumber(c.getCourseNumber()) != null){
+                    this.originalDepartment = d;
+                    break;
+                }
+            }
+        } else {
+            // For a new course, there is no original department yet.
+            this.originalDepartment = null;
+        }
+
         populateDepartments();
-        populateDetails();
+        configurePanelForMode();
+    }
+    
+    private void configurePanelForMode() {
+        if (isNewMode) {
+            lblTitle.setText("Create New Course");
+            btnEditSave.setText("Create");
+            setFieldsEnabled(true);
+            txtCourseNumber.setText("");
+            txtCourseName.setText("");
+            cbxCredits.setSelectedIndex(0);
+            txtPrice.setText("0");
+        } else {
+            lblTitle.setText("View Course Details");
+            btnEditSave.setText("Edit");
+            setFieldsEnabled(false);
+            populateDetails();
+        }
     }
     
     private void populateDetails() {
@@ -45,12 +80,13 @@ public class EditCourseJPanel extends javax.swing.JPanel {
         txtCourseName.setText(course.getName());
         cbxCredits.setSelectedItem(String.valueOf(course.getCredits()));
         txtPrice.setText(String.valueOf(course.getCoursePrice()));
-        cbxDepartment.setSelectedItem(department.getName());
+        if (originalDepartment != null) {
+            cbxDepartment.setSelectedItem(originalDepartment.getName());
+        }
     }
     
     private void populateDepartments() {
         cbxDepartment.removeAllItems();
-        // Get the full list of departments from the business object
         for(Department dept : business.getDepartmentList().getDepartments()) {
             cbxDepartment.addItem(dept.getName());
         }
@@ -199,6 +235,20 @@ public class EditCourseJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        boolean hasUnsavedChanges = !txtCourseNumber.getText().isBlank() || !txtCourseName.getText().isBlank();
+        
+        if (isNewMode && btnEditSave.getText().equals("Create") && hasUnsavedChanges) {
+            int confirm = JOptionPane.showConfirmDialog(
+                this, 
+                "Are you sure you want to go back? Any unsaved changes will be lost.", 
+                "Confirm Cancellation", 
+                JOptionPane.YES_NO_OPTION);
+            
+            if (confirm != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+        
         CardSequencePanel.remove(this);
         CardLayout layout = (CardLayout) CardSequencePanel.getLayout();
         layout.previous(CardSequencePanel);
@@ -206,56 +256,78 @@ public class EditCourseJPanel extends javax.swing.JPanel {
 
     private void btnEditSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditSaveActionPerformed
         if (btnEditSave.getText().equals("Edit")) {
-            // Switch to Edit mode
             btnEditSave.setText("Save");
             lblTitle.setText("Edit Course Details");
             setFieldsEnabled(true);
+            return;
+        }
+
+        // --- Save/Create Logic ---
+        String courseNumber = txtCourseNumber.getText();
+        if (!Pattern.matches("[A-Z]{4}\\d{4}", courseNumber)) {
+            JOptionPane.showMessageDialog(this, "Invalid Course Number format.\nPlease use 4 capital letters and 4 numbers (e.g., INFO5100).", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            txtCourseNumber.setText("");
+            return;
+        }
+        
+        String courseName = txtCourseName.getText();
+        if (courseName.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Course Name cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String selectedDeptName = (String) cbxDepartment.getSelectedItem();
+        if (selectedDeptName == null || selectedDeptName.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Please select a department.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        Department selectedDept = business.getDepartmentList().findDepartment(selectedDeptName);
+
+        // Prevent creating a course with a number that already exists in any department.
+        if (isNewMode) {
+            for(Department d : business.getDepartmentList().getDepartments()){
+                if(d.getCourseCatalog().getCourseByNumber(courseNumber) != null){
+                    JOptionPane.showMessageDialog(this, "A course with this number already exists in the '" + d.getName() + "' department.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+        }
+
+        String action = isNewMode ? "create" : "save";
+        int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to " + action + " this course?", "Confirm " + action, JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        // Update the course object's attributes
+        int credits = Integer.parseInt((String) cbxCredits.getSelectedItem());
+        course.setCourseNumber(courseNumber);
+        course.setCourseName(courseName);
+        course.setCredits(credits);
+
+        if (isNewMode) {
+            // Add the new course to the selected department's catalog
+            selectedDept.getCourseCatalog().getCourseList().add(course);
+            JOptionPane.showMessageDialog(this, "Course created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            btnBackActionPerformed(null);
         } else {
-            // Switch to Save mode
-            // 1. Validation
-            String courseNumber = txtCourseNumber.getText();
-            // Regex for 4 capital letters followed by 4 digits
-            if (!Pattern.matches("[A-Z]{4}\\d{4}", courseNumber)) {
-                JOptionPane.showMessageDialog(this, "Invalid Course Number format.\nPlease use 4 capital letters followed by 4 numbers (e.g., INFO5100).", "Validation Error", JOptionPane.ERROR_MESSAGE);
-                txtCourseNumber.setText(""); // Clear the invalid field
-                return;
+            // Edit Mode: Check if the department has changed
+            if (originalDepartment != null && !originalDepartment.getName().equals(selectedDeptName)) {
+                // If so, move the course
+                originalDepartment.getCourseCatalog().getCourseList().remove(course);
+                selectedDept.getCourseCatalog().getCourseList().add(course);
+                this.originalDepartment = selectedDept; // Update the original department for future edits
             }
-            
-            String courseName = txtCourseName.getText();
-            if (courseName.isBlank()) {
-                JOptionPane.showMessageDialog(this, "Course Name cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // 2. Confirmation
-            int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to save these changes?", "Confirm Save", JOptionPane.YES_NO_OPTION);
-            if (confirm != JOptionPane.YES_OPTION) {
-                return;
-            }
-
-            // 3. Update Data Model
-            int credits = Integer.parseInt((String) cbxCredits.getSelectedItem());
-            course.setCourseNumber(courseNumber);
-            course.setCourseNumber(courseName);
-            course.setCredits(credits);
-            // Note: Changing the department for a course would be a more complex operation,
-            // as it would involve moving it from one department's catalog to another.
-            // For now, we are just displaying it.
-
-            // 4. Update UI State
             btnEditSave.setText("Edit");
             lblTitle.setText("View Course Details");
             setFieldsEnabled(false);
-            
             JOptionPane.showMessageDialog(this, "Course details updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-            // 5. Refresh the previous panel's table
-            manageCoursesPanel.populateTable();
         }
+
+        manageCoursesPanel.populateTable();
     }//GEN-LAST:event_btnEditSaveActionPerformed
 
     private void cbxCreditsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxCreditsActionPerformed
-        // Automatically update the price when credits change
         if (cbxCredits.getSelectedItem() != null) {
             try {
                 int credits = Integer.parseInt((String) cbxCredits.getSelectedItem());
