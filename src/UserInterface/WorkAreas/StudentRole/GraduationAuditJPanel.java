@@ -28,7 +28,7 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
     private final String homeCard;
 
     private static final int REQUIRED_CREDITS_DEFAULT = 32;
-    private static final String[] KNOWN_SEMESTERS = {"Summer 2025", "Fall2025", "Spring2026"};
+    private static final String[] KNOWN_SEMESTERS = { "Summer2025", "Fall2025", "Spring2026" };
     
     
     
@@ -243,7 +243,7 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
         }
         String semester = String.valueOf(tblCourseGrade.getValueAt(row, 0));
 
-        TranscriptJPanel tp = new TranscriptJPanel(main, dept, personId, semester);
+        TranscriptJPanel tp = new TranscriptJPanel(main, dept, personId, semester, homeCard);
         String cardName = "transcript:" + semester;
         main.add(cardName, tp);
         ((java.awt.CardLayout) main.getLayout()).show(main, cardName);

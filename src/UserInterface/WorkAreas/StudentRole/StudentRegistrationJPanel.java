@@ -20,6 +20,7 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
     private final JPanel workArea;
     private final Department dept;
     private final String personId;
+    private final String homeCard;
 
     
     //get schedule for a semester
@@ -42,10 +43,11 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
     }
 
     
-    public StudentRegistrationJPanel(JPanel workArea, Department dept, String personId) {
+    public StudentRegistrationJPanel(JPanel workArea, Department dept, String personId, String homeCard) {
         this.workArea = workArea;
         this.dept = dept;
         this.personId = personId;
+        this.homeCard = homeCard;
         
         initComponents();
         
@@ -223,47 +225,69 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
         //wire the back button to Student Portal panel
-        if (workArea != null) {
-        ((CardLayout) workArea.getLayout()).previous(workArea);
+        if (workArea != null && homeCard != null) {
+        ((CardLayout) workArea.getLayout()).show(workArea, homeCard);
         }
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnEnrollActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnrollActionPerformed
         // TODO add your handling code here:
+        // must select an offering from "Available Offerings"
         int row = tblAvailable1.getSelectedRow();
-        if (row < 0) { 
+        if (row < 0) {
             JOptionPane.showMessageDialog(this, "Select an offering to enroll.", "No selection", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String sem  = String.valueOf(cmbSemester.getSelectedItem());
-        String cnum = String.valueOf(tblAvailable1.getValueAt(row, 0));
-        
+        // semester + course number from UI
+        final String sem  = String.valueOf(cmbSemester.getSelectedItem());
+        final String cnum = String.valueOf(tblAvailable1.getValueAt(row, 0));
+
+        // confirm
         int rc = JOptionPane.showConfirmDialog(
-                this, "Enroll in " + cnum + " for " + sem + "?", "Confirm enrollment", JOptionPane.YES_NO_OPTION);
-        if (rc != JOptionPane.YES_OPTION) 
-            return;
-        //do the enrollment function here
+            this, "Enroll in " + cnum + " for " + sem + "?", "Confirm enrollment", JOptionPane.YES_NO_OPTION);
+        if (rc != JOptionPane.YES_OPTION) return;
+
+        // get student course load for the semester
         info5100.university.example.Persona.StudentProfile sp = getOrCreateModelStudent();
         info5100.university.example.CourseSchedule.CourseLoad cl = sp.getCourseLoadBySemester(sem);
         if (cl == null) cl = sp.newCourseLoad(sem);
-        
-        info5100.university.example.CourseSchedule.CourseSchedule cs = dept.newCourseSchedule(sem);
-        info5100.university.example.CourseSchedule.CourseOffer co = cs.getCourseOffer(String.valueOf(cnum));
+
+        // avoid duplicate enrollments
+        if (alreadyEnrolled(cl, cnum)) {
+            JOptionPane.showMessageDialog(this, "You are already enrolled in " + cnum + " (" + sem + ").",
+                "Duplicate", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // IMPORTANT: use the EXISTING schedule; do NOT create a new one
+        info5100.university.example.CourseSchedule.CourseSchedule cs = scheduleFor(sem);
+        if (cs == null) {
+            JOptionPane.showMessageDialog(this, "No schedule found for " + sem + ".", "Not found", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        info5100.university.example.CourseSchedule.CourseOffer co = cs.getCourseOffer(cnum);
         if (co == null) {
             JOptionPane.showMessageDialog(this, "That offering is no longer available.", "Not found", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
+        // check seat availability (will return null when no empty seat)
         if (co.getEmptySeat() == null) {
             JOptionPane.showMessageDialog(this, "No seats left in " + cnum + ".", "Full", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
+        // enroll
         cl.newSeatAssignment(co);
-            
-        JOptionPane.showMessageDialog(this, "Enrolled in " + cnum + " (" + sem + ").", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+        JOptionPane.showMessageDialog(this, "Enrolled in " + cnum + " (" + sem + ").",
+            "Success", JOptionPane.INFORMATION_MESSAGE);
+
+        // refresh both tables
         loadAvailable();
-        loadEnrolled();  // refresh both tables
+        loadEnrolled();
      
     }//GEN-LAST:event_btnEnrollActionPerformed
 

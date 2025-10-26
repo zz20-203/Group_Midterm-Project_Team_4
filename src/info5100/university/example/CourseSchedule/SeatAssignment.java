@@ -17,9 +17,12 @@ public class SeatAssignment {
         return like;
     }
     
-    public void setGrade(String letter) {
-        this.grade = mapLetter(letter);
+    public void setGrade(String letter) { 
+    this.grade = letterToPoints(letter);
     }
+    
+    public String getGrade() {
+    return pointsToLetter(this.grade);
     
     public void assignGrade(String letter) {
         setGrade(letter);
@@ -63,6 +66,32 @@ public class SeatAssignment {
         case "F":  return 0.0f;
         default:   return 0.0f;
     }
+    }
+
+    private float letterToPoints(String letter) {
+         if (letter == null) return -1f;
+        switch (letter) {
+            case "A": return 4.0f; case "A-": return 3.7f;
+            case "B+": return 3.3f; case "B": return 3.0f; case "B-": return 2.7f;
+            case "C+": return 2.3f; case "C": return 2.0f; case "C-": return 1.7f;
+            case "D": return 1.0f; case "F": return 0.0f;
+            default: return -1f; // not graded / IP
+        
+    }
+    }
+
+    private String pointsToLetter(float pts) {
+        if (pts < 0) return "-";
+        if (pts >= 3.95f) return "A";
+        if (pts >= 3.55f) return "A-";
+        if (pts >= 3.15f) return "B+";
+        if (pts >= 2.85f) return "B";
+        if (pts >= 2.55f) return "B-";
+        if (pts >= 2.15f) return "C+";
+        if (pts >= 1.95f) return "C";
+        if (pts >= 1.65f) return "C-";
+        if (pts >= 0.5f)  return "D";
+        return "F";
     }
 }
 
