@@ -27,7 +27,7 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
     private final JPanel workArea;
     private final Department dept;
     private final String personId;
-    
+    private final String homeCard;
     private final Map<String, Submission> submissionStore = new HashMap<>();
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     
@@ -36,14 +36,16 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
     /**
      * Creates new form CourseWorkJPanel
      */
-    public CourseWorkJPanel(JPanel workArea, Department dept, String personId) {
+    public CourseWorkJPanel(JPanel workArea, Department dept, String personId, String homeCard) {
         this.workArea = workArea;
         this.dept = dept;
         this.personId = personId;
+        this.homeCard = homeCard;
         initComponents();
         
         //semester select
         cmbSemester.removeAllItems();
+        cmbSemester.addItem("Summer2025");
         cmbSemester.addItem("Fall2025");
         cmbSemester.addItem("Spring2026");
         cmbSemester.setSelectedIndex(0);
@@ -233,12 +235,14 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
         if (fc.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) return;
 
         File f = fc.getSelectedFile();
+        // save 'submission' and refresh table so “Last Submitted” updates on the table
         String key = keyOf(sem, cnum);
         Submission s = submissionStore.getOrDefault(key, new Submission());
         s.fileName  = f.getName();
         s.timestamp = System.currentTimeMillis();
         submissionStore.put(key, s);
 
+        JOptionPane.showMessageDialog(this, "Submitted: " + f.getName(), "Uploaded", JOptionPane.INFORMATION_MESSAGE);
         loadTable();
     }//GEN-LAST:event_btnSubmitActionPerformed
 
@@ -272,8 +276,8 @@ public class CourseWorkJPanel extends javax.swing.JPanel {
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        if (workArea != null) {
-        ((java.awt.CardLayout) workArea.getLayout()).previous(workArea);
+    if (workArea != null && homeCard != null) {
+        ((CardLayout) workArea.getLayout()).show(workArea, homeCard);
         } 
         
     }//GEN-LAST:event_btnBackActionPerformed

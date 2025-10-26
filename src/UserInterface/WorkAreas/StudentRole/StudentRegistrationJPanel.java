@@ -20,9 +20,7 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
     private final JPanel workArea;
     private final Department dept;
     private final String personId;
-    
-    //use this helper for showing the message for selection status on lblMsg
-    private void setStatus(String s) { lblMsg.setText(s == null ? " " : s); }
+
     
     //get schedule for a semester
     private CourseSchedule scheduleFor(String sem) {
@@ -34,13 +32,22 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
         return co.getEmptySeatCount();
     }
     
+     private boolean alreadyEnrolled(CourseLoad cl, String courseNumber) {
+        if (cl == null) return false;
+        for (SeatAssignment sa : cl.getSeatAssignments()) {
+            CourseOffer co = sa.getCourseOffer();
+            if (co != null && courseNumber.equals(co.getCourseNumber())) return true;
+        }
+        return false;
+    }
+
+    
     public StudentRegistrationJPanel(JPanel workArea, Department dept, String personId) {
         this.workArea = workArea;
         this.dept = dept;
         this.personId = personId;
         
         initComponents();
-        lblMsg.setText(" "); //keep status bar visible even when empty.
         
         //initialize the semester list in comboBox
         cmbSemester.removeAllItems();
@@ -251,6 +258,9 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "No seats left in " + cnum + ".", "Full", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        
+        cl.newSeatAssignment(co);
+            
         JOptionPane.showMessageDialog(this, "Enrolled in " + cnum + " (" + sem + ").", "Success", JOptionPane.INFORMATION_MESSAGE);
         loadAvailable();
         loadEnrolled();  // refresh both tables
@@ -292,6 +302,7 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
         }
         //remove the seat
         cl.getSeatAssignments().remove(toRemove);
+        
         JOptionPane.showMessageDialog(this, "Dropped " + cnum + " (" + sem + ").", "Success", JOptionPane.INFORMATION_MESSAGE);
 
         loadAvailable();
@@ -321,17 +332,15 @@ public class StudentRegistrationJPanel extends javax.swing.JPanel {
 
         String sem = String.valueOf(cmbSemester.getSelectedItem());
         CourseSchedule cs = scheduleFor(sem);
-        if (cs == null) { setStatus("No schedule for " + sem); return; }
+        if (cs == null) return;
 
-        // common API: cs.getSchedule().values() returns the CourseOffers
         for (CourseOffer co : cs.getCourseOfferList()) {
             String num  = co.getCourseNumber();
             String name = co.getSubjectCourse().getName();
             int left    = seatsLeft(co);
-            m.addRow(new Object[]{num, name, left});
+            m.addRow(new Object[]{ num, name, left });
         }
-        setStatus(" ");
-        }
+    }
 
     //populate My Enrollments for the selected semester
     private void loadEnrolled() {

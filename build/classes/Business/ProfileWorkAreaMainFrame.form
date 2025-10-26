@@ -59,10 +59,8 @@
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <Component id="UserNameTextField" pref="130" max="32767" attributes="0"/>
                           <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="btnSignUp" alignment="0" pref="80" max="32767" attributes="0"/>
-                              <Component id="btnLogin" alignment="0" max="32767" attributes="0"/>
-                          </Group>
+                          <Component id="btnSignUp" alignment="0" pref="130" max="32767" attributes="0"/>
+                          <Component id="btnLogin" alignment="0" max="32767" attributes="0"/>
                           <Component id="PasswordTextField" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>

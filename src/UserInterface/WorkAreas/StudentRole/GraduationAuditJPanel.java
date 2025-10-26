@@ -25,15 +25,22 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
     private final JPanel main;         
     private final Department dept;   
     private final String personId; 
+    private final String homeCard;
 
     private static final int REQUIRED_CREDITS_DEFAULT = 32;
-    private static final String[] KNOWN_SEMESTERS = {"Fall2025", "Spring2026"};
+    private static final String[] KNOWN_SEMESTERS = {"Summer 2025", "Fall2025", "Spring2026"};
     
-    public GraduationAuditJPanel(JPanel main, Department dept, String personId) {
+    
+    
+    public GraduationAuditJPanel(JPanel main, Department dept, String personId, String homeCard) {
         this.main = main;
         this.dept = dept;
         this.personId = personId;
+        this.homeCard = homeCard;
+        
         initComponents();
+        
+        pbCreditsProgress.setStringPainted(true);
         
         // read-only fields
         txtDeptName.setEditable(false);
@@ -148,41 +155,42 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(239, 239, 239)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblEarnedCredits)
-                    .addComponent(lblRequiredCredits)
-                    .addComponent(lblDeptName)
-                    .addComponent(lblGpa)
-                    .addComponent(lblEarningCredits))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblGradAudit)
-                    .addComponent(txtEarnedCredits)
-                    .addComponent(txtRequiredCredits)
-                    .addComponent(txtDeptName)
-                    .addComponent(txtEarningCredits, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtGpa, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(44, Short.MAX_VALUE)
+                .addGap(46, 46, 46)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnBack)
+                        .addGap(195, 195, 195)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblEarnedCredits)
+                            .addComponent(lblRequiredCredits)
+                            .addComponent(lblDeptName)
+                            .addComponent(lblGpa)
+                            .addComponent(lblEarningCredits))
                         .addGap(18, 18, 18)
-                        .addComponent(btnSeeDetails))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jScrollPane1)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lblGradAudit)
+                            .addComponent(txtEarnedCredits)
+                            .addComponent(txtRequiredCredits)
+                            .addComponent(txtDeptName)
+                            .addComponent(txtEarningCredits, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtGpa, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 245, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(lblProgress)
+                            .addComponent(btnBack)
                             .addGap(18, 18, 18)
-                            .addComponent(pbCreditsProgress, javax.swing.GroupLayout.PREFERRED_SIZE, 689, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(53, 53, 53))
+                            .addComponent(btnSeeDetails))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblProgress)
+                                .addGap(18, 18, 18)
+                                .addComponent(pbCreditsProgress, javax.swing.GroupLayout.PREFERRED_SIZE, 689, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(72, Short.MAX_VALUE)
+                .addGap(57, 57, 57)
                 .addComponent(lblGradAudit)
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -214,14 +222,14 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSeeDetails)
                     .addComponent(btnBack))
-                .addGap(47, 47, 47))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        if (main != null) {
-            ((CardLayout) main.getLayout()).previous(main);
+        if (main != null && homeCard != null) {
+            ((CardLayout) main.getLayout()).show(main, homeCard);
         }
 
     }//GEN-LAST:event_btnBackActionPerformed
@@ -316,7 +324,7 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
                     }
                 }
             }
-            String overallGrade = (gradedCredits == 0 ? "-" : "—"); // use the accumulatave score for the semester grade
+            String overallGrade = "-";
             String status = allGraded ? "Completed" : "In progress";
             m.addRow(new Object[]{sem, semCredits, overallGrade, status});
         }

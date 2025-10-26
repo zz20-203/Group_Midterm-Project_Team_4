@@ -22,6 +22,7 @@ import UserInterface.WorkAreas.AdminRole.AdminRoleWorkAreaJPanel;
 import UserInterface.WorkAreas.FacultyRole.FacultyWorkAreaJPanel;
 import UserInterface.WorkAreas.StudentRole.SignUpJPanel;
 import UserInterface.WorkAreas.StudentRole.StudentWorkAreaJPanel;
+import java.awt.CardLayout;
 import javax.swing.JPanel;
 
 /**
@@ -36,6 +37,7 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
     /**
      * Creates new form PricingMainFrame
      */
+    public static final String HOME_CARD = "studentHome";
 
     public ProfileWorkAreaMainFrame() {
         initComponents();
@@ -134,9 +136,8 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(UserNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
                     .addComponent(jLabel2)
-                    .addGroup(actionsidejpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(btnSignUp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
-                        .addComponent(btnLogin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnSignUp, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                    .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(PasswordTextField)))
         );
         actionsidejpanelLayout.setVerticalGroup(
@@ -204,13 +205,14 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         if (profile instanceof StudentProfile) {
             String personId = useraccount.getPersonId();
 
-            StudentWorkAreaJPanel studentPanel =
-                    new StudentWorkAreaJPanel(CardSequencePanel, personId, dept);
+         // Build the student's home (menu) panel (4-arg ctor!)
+        StudentWorkAreaJPanel studentPanel =
+            new StudentWorkAreaJPanel(CardSequencePanel, dept, personId, HOME_CARD);
 
-            CardSequencePanel.removeAll();
-            CardSequencePanel.add("student", studentPanel);
-            ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
-            return;
+        // No local variable here; use the class constant we defined above
+        CardSequencePanel.add(HOME_CARD, studentPanel);
+        ((CardLayout) CardSequencePanel.getLayout()).show(CardSequencePanel, HOME_CARD);
+        return;
 
         }
 

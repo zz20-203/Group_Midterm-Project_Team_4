@@ -14,7 +14,8 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
 
     private final JPanel workArea; 
     private final Department dept; 
-    private final String personId;  
+    private final String personId;
+    private final String homeCard;
 
     /**
      * Creates new form UnitRiskWorkArea
@@ -23,11 +24,13 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
      * @param clp
      */
 
-    public StudentWorkAreaJPanel(JPanel workArea, String personId, Department dept) {
-        initComponents();
+    public StudentWorkAreaJPanel(JPanel workArea, String personId, Department dept, String homeCard) {
         this.workArea = workArea;
         this.dept = dept;
         this.personId = personId;
+        this.homeCard = homeCard;
+        initComponents();
+
 
     }
 
@@ -161,10 +164,8 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCourseWorkIdentifyResourceAssetsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCourseWorkIdentifyResourceAssetsActionPerformed
-        String name = "CourseWork";
-        CourseWorkJPanel panel = new CourseWorkJPanel(workArea, dept, personId);
-        workArea.add(name, panel);
-        ((java.awt.CardLayout) workArea.getLayout()).show(workArea, name);
+        CourseWorkJPanel p = new CourseWorkJPanel(workArea, dept, personId, homeCard);
+        ((CardLayout) workArea.getLayout()).show(workArea, "coursework");
 
     }//GEN-LAST:event_btnCourseWorkIdentifyResourceAssetsActionPerformed
 
@@ -198,6 +199,9 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
 
     private void btnTranscriptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTranscriptActionPerformed
         // TODO add your handling code here:
+        TranscriptJPanel tp = new TranscriptJPanel(workArea, dept, personId, null /* default */);
+        workArea.add("transcript", tp);
+        ((CardLayout) workArea.getLayout()).show(workArea, "transcript");
     }//GEN-LAST:event_btnTranscriptActionPerformed
 
 

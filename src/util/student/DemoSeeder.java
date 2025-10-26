@@ -14,14 +14,16 @@ import info5100.university.example.CourseCatalog.CourseCatalog;
 import info5100.university.example.CourseSchedule.CourseSchedule;
 import info5100.university.example.CourseSchedule.CourseOffer;
 import info5100.university.example.CourseSchedule.CourseLoad;
-import info5100.university.example.Persona.*;
+import info5100.university.example.CourseSchedule.SeatAssignment;
+
 /**
  *
  * @author shaoweili
  */
 
-
+//try to save one demo student data so that we can have the historical data to navigate in student portal
 public final class DemoSeeder {
+
     private DemoSeeder() {}
 
     public static void seedStudent(Business business, Department dept) {
@@ -30,10 +32,8 @@ public final class DemoSeeder {
         String uname  = "vickyli";
         String passwd = "123456";
         
-        
-        // If the account already exists, don’t seed twice
-        if (business.getUserAccountDirectory()
-                    .AuthenticateUser(uname, passwd) != null) {
+         // If the account already exists, don’t seed twice
+        if (business.getUserAccountDirectory().AuthenticateUser(uname, passwd) != null) {
             return;
         }
 
@@ -60,12 +60,13 @@ public final class DemoSeeder {
         Course c5000 = byNumberOrCreate(cc, "INFO5000", "Foundations of Info Sci", 4);
 
         // Create and find the model-side student
-        Persona.PersonDirectory mpd = dept.getPersonDirectory();
-        Persona.Person mPerson = mpd.newPerson(nuid);
+        info5100.university.example.Persona.PersonDirectory mpd = dept.getPersonDirectory();
+        info5100.university.example.Persona.Person mPerson = mpd.newPerson(nuid);
         try { mPerson.setFirstName("Vicky"); mPerson.setLastName("Li"); } catch (Exception ignore) {}
 
-        Persona.StudentDirectory msd = dept.getStudentDirectory();
-        Persona.StudentProfile mStudent = msd.newStudentProfile(mPerson);
+        info5100.university.example.Persona.StudentDirectory msd = dept.getStudentDirectory();
+        info5100.university.example.Persona.StudentProfile mStudent = msd.newStudentProfile(mPerson);
+
 
         //pre save some student data from summer2025 semester
         String summer = "Summer2025";
@@ -77,14 +78,15 @@ public final class DemoSeeder {
         off5000.generatSeats(30);
 
         CourseLoad summerCL = mStudent.newCourseLoad(summer);
-        var sa4200 = summerCL.newSeatAssignment(off4200);
-        var sa5000 = summerCL.newSeatAssignment(off5000);
+
+        SeatAssignment sa4200 = summerCL.newSeatAssignment(off4200);
+        SeatAssignment sa5000 = summerCL.newSeatAssignment(off5000);
+
+        // Assign letter grades so they count as “earned”
+        safeSetGrade(sa4200, "A-");
+        safeSetGrade(sa5000, "B+");
 
         // Assign letter grades (so they count as earned in audit part)
-        safeSetGrade(sa4200, "A-");   
-        safeSetGrade(sa5000, "B+"); 
-
-        // make fall 2025 as in progress semester and save
         String fall = "Fall2025";
         CourseSchedule fallSched = dept.newCourseSchedule(fall);
         CourseOffer off5100 = fallSched.newCourseOffer(c5100.getCourseNumber());
@@ -93,5 +95,25 @@ public final class DemoSeeder {
         CourseLoad fallCL = mStudent.newCourseLoad(fall);
         fallCL.newSeatAssignment(off5100);
     }
+    
+    private static Course byNumberOrCreate(CourseCatalog cc, String number, String name, int credits) {
+        Course c = cc.getCourseByNumber(number);
+        if (c == null) {
+            // Course constructor is (name, number, credits)
+            c = cc.newCourse(name, number, credits);
+        }
+        return c;
     }
-}
+    
+    //Assign a letter grade via reflection to contain any differences.
+    private static void safeSetGrade(Object seatAssignment, String letter) {
+        try {
+            seatAssignment.getClass().getMethod("setGrade", String.class).invoke(seatAssignment, letter);
+            return;
+        } catch (Exception ignore) { }
+        try {
+            seatAssignment.getClass().getMethod("assignGrade", String.class).invoke(seatAssignment, letter);
+        } catch (Exception ignore) { }
+        }
+    }
+
