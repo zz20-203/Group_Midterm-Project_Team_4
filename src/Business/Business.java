@@ -10,6 +10,7 @@ import Business.Profiles.EmployeeDirectory;
 import Business.Profiles.StudentDirectory;
 import Business.Profiles.FacultyDirectory;
 import info5100.university.example.Department.Department;
+import info5100.university.example.Department.DepartmentList;
 
 import Business.UserAccounts.UserAccountDirectory;
 
@@ -28,6 +29,7 @@ public class Business {
     FacultyDirectory facultydirectory;
     
     private Department modelDepartment;
+    private DepartmentList departmentList;
 
     public Department getModelDepartment() { return modelDepartment; }
     public void setModelDepartment(Department modelDepartment) { this.modelDepartment = modelDepartment; }
@@ -42,6 +44,8 @@ public class Business {
         useraccountdirectory = new UserAccountDirectory();
         studentdirectory = new StudentDirectory();
         facultydirectory = new FacultyDirectory();
+        
+        this.departmentList = new DepartmentList();
 
     }
 
@@ -65,6 +69,10 @@ public class Business {
 
     public FacultyDirectory getFacultyDirectory(){
         return facultydirectory;
+    }
+    
+    public DepartmentList getDepartmentList() {
+        return departmentList;
     }
 
 }

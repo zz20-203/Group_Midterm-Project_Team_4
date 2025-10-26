@@ -4,18 +4,65 @@
  */
 package UserInterface.WorkAreas.FacultyRole;
 
+import Business.Business;
+import info5100.university.example.CourseCatalog.Course;
+import info5100.university.example.Department.Department;
+import java.awt.CardLayout;
+import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 /**
  *
  * @author Jerry Xu
  */
 public class EditCourseJPanel extends javax.swing.JPanel {
 
+    private JPanel CardSequencePanel;
+    private Business business;
+    private Department department;
+    private Course course;
+    private ManageCoursesJPanel manageCoursesPanel; // Reference to the previous panel
+
     /**
      * Creates new form EditCourseJPanel
      */
-    public EditCourseJPanel() {
+    public EditCourseJPanel(JPanel clp, Business b, Course c, ManageCoursesJPanel mcp) {
         initComponents();
+        this.CardSequencePanel = clp;
+        this.business = b;
+        this.course = c;
+        // The department this course belongs to is the currently modeled one.
+        this.department = b.getModelDepartment(); 
+        this.manageCoursesPanel = mcp;
+        
+        populateDepartments();
+        populateDetails();
     }
+    
+    private void populateDetails() {
+        txtCourseNumber.setText(course.getCourseNumber());
+        txtCourseName.setText(course.getName());
+        cbxCredits.setSelectedItem(String.valueOf(course.getCredits()));
+        txtPrice.setText(String.valueOf(course.getCoursePrice()));
+        cbxDepartment.setSelectedItem(department.getName());
+    }
+    
+    private void populateDepartments() {
+        cbxDepartment.removeAllItems();
+        // Get the full list of departments from the business object
+        for(Department dept : business.getDepartmentList().getDepartments()) {
+            cbxDepartment.addItem(dept.getName());
+        }
+    }
+    
+    private void setFieldsEnabled(boolean enabled) {
+        txtCourseNumber.setEnabled(enabled);
+        txtCourseName.setEnabled(enabled);
+        cbxCredits.setEnabled(enabled);
+        cbxDepartment.setEnabled(enabled);
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -38,13 +85,23 @@ public class EditCourseJPanel extends javax.swing.JPanel {
         txtCourseName = new javax.swing.JTextField();
         txtPrice = new javax.swing.JTextField();
         cbxDepartment = new javax.swing.JComboBox<>();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cbxCredits = new javax.swing.JComboBox<>();
 
         setPreferredSize(new java.awt.Dimension(640, 480));
 
         btnEditSave.setText("Edit");
+        btnEditSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditSaveActionPerformed(evt);
+            }
+        });
 
         btnBack.setText("<< Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         lblTitle.setFont(new java.awt.Font("Microsoft YaHei UI", 0, 24)); // NOI18N
         lblTitle.setText("View Course Details");
@@ -68,8 +125,13 @@ public class EditCourseJPanel extends javax.swing.JPanel {
         cbxDepartment.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "" }));
         cbxDepartment.setEnabled(false);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "0", "2", "4", "6", "8" }));
-        jComboBox1.setEnabled(false);
+        cbxCredits.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "0", "2", "4", "6", "8" }));
+        cbxCredits.setEnabled(false);
+        cbxCredits.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxCreditsActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -97,7 +159,7 @@ public class EditCourseJPanel extends javax.swing.JPanel {
                             .addComponent(cbxDepartment, 0, 260, Short.MAX_VALUE)
                             .addComponent(txtCourseName)
                             .addComponent(txtCourseNumber)
-                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(cbxCredits, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(191, 191, 191)
                         .addComponent(lblTitle)))
@@ -119,7 +181,7 @@ public class EditCourseJPanel extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCredits)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbxCredits, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblPrice)
@@ -136,12 +198,81 @@ public class EditCourseJPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        CardSequencePanel.remove(this);
+        CardLayout layout = (CardLayout) CardSequencePanel.getLayout();
+        layout.previous(CardSequencePanel);
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnEditSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditSaveActionPerformed
+        if (btnEditSave.getText().equals("Edit")) {
+            // Switch to Edit mode
+            btnEditSave.setText("Save");
+            lblTitle.setText("Edit Course Details");
+            setFieldsEnabled(true);
+        } else {
+            // Switch to Save mode
+            // 1. Validation
+            String courseNumber = txtCourseNumber.getText();
+            // Regex for 4 capital letters followed by 4 digits
+            if (!Pattern.matches("[A-Z]{4}\\d{4}", courseNumber)) {
+                JOptionPane.showMessageDialog(this, "Invalid Course Number format.\nPlease use 4 capital letters followed by 4 numbers (e.g., INFO5100).", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                txtCourseNumber.setText(""); // Clear the invalid field
+                return;
+            }
+            
+            String courseName = txtCourseName.getText();
+            if (courseName.isBlank()) {
+                JOptionPane.showMessageDialog(this, "Course Name cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 2. Confirmation
+            int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to save these changes?", "Confirm Save", JOptionPane.YES_NO_OPTION);
+            if (confirm != JOptionPane.YES_OPTION) {
+                return;
+            }
+
+            // 3. Update Data Model
+            int credits = Integer.parseInt((String) cbxCredits.getSelectedItem());
+            course.setCourseNumber(courseNumber);
+            course.setCourseNumber(courseName);
+            course.setCredits(credits);
+            // Note: Changing the department for a course would be a more complex operation,
+            // as it would involve moving it from one department's catalog to another.
+            // For now, we are just displaying it.
+
+            // 4. Update UI State
+            btnEditSave.setText("Edit");
+            lblTitle.setText("View Course Details");
+            setFieldsEnabled(false);
+            
+            JOptionPane.showMessageDialog(this, "Course details updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+            // 5. Refresh the previous panel's table
+            manageCoursesPanel.populateTable();
+        }
+    }//GEN-LAST:event_btnEditSaveActionPerformed
+
+    private void cbxCreditsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxCreditsActionPerformed
+        // Automatically update the price when credits change
+        if (cbxCredits.getSelectedItem() != null) {
+            try {
+                int credits = Integer.parseInt((String) cbxCredits.getSelectedItem());
+                int price = credits * 1500;
+                txtPrice.setText(String.valueOf(price));
+            } catch (NumberFormatException e) {
+                txtPrice.setText("0");
+            }
+        }
+    }//GEN-LAST:event_cbxCreditsActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnEditSave;
+    private javax.swing.JComboBox<String> cbxCredits;
     private javax.swing.JComboBox<String> cbxDepartment;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel lblCourseName;
     private javax.swing.JLabel lblCourseNumber;
     private javax.swing.JLabel lblCredits;
