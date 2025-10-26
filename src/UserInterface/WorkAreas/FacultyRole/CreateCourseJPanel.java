@@ -6,14 +6,14 @@ package UserInterface.WorkAreas.FacultyRole;
 
 /**
  *
- * @author Jerry Xu
+ * @author Luciela us Biktria
  */
-public class ManageStudentProfilesJPanel extends javax.swing.JPanel {
+public class CreateCourseJPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form ManageStudenProfilesJPanel
+     * Creates new form CreateCourseJPanel
      */
-    public ManageStudentProfilesJPanel() {
+    public CreateCourseJPanel() {
         initComponents();
     }
 
@@ -32,11 +32,11 @@ public class ManageStudentProfilesJPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 588, Short.MAX_VALUE)
+            .addGap(0, 640, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 487, Short.MAX_VALUE)
+            .addGap(0, 480, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

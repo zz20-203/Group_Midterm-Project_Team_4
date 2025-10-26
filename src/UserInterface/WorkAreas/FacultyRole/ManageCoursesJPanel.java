@@ -6,7 +6,7 @@ package UserInterface.WorkAreas.FacultyRole;
 
 /**
  *
- * @author Luciela us Biktria
+ * @author Jerry Xu
  */
 public class ManageCoursesJPanel extends javax.swing.JPanel {
 
@@ -26,19 +26,210 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        lblTableTitle = new javax.swing.JLabel();
+        btnDelete = new javax.swing.JButton();
+        lblTitle = new javax.swing.JLabel();
+        btnBack = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        UserAccountTable = new javax.swing.JTable();
+        btnNewCourse = new javax.swing.JButton();
+
+        setPreferredSize(new java.awt.Dimension(640, 480));
+
+        lblTableTitle.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        lblTableTitle.setText("Courses");
+
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        lblTitle.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        lblTitle.setText("Manage Courses");
+
+        btnBack.setText("<< Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+
+        btnEdit.setText("Next >>");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
+        UserAccountTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Course Number", "Course Name", "Credits", "Price"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        UserAccountTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                UserAccountTableMousePressed(evt);
+            }
+        });
+        jScrollPane1.setViewportView(UserAccountTable);
+
+        btnNewCourse.setText("New");
+        btnNewCourse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewCourseActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lblTableTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(btnBack)
+                                    .addGap(390, 390, 390)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(btnNewCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(lblTitle)
+                .addGap(42, 42, 42)
+                .addComponent(lblTableTitle)
+                .addGap(1, 1, 1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(60, 60, 60)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnBack)
+                    .addComponent(btnEdit))
+                .addGap(18, 18, 18)
+                .addComponent(btnNewCourse)
+                .addGap(16, 16, 16)
+                .addComponent(btnDelete)
+                .addContainerGap(79, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = UserAccountTable.getSelectedRow();
+
+        if (selectedRow < 0) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please select a user account to delete.",
+                "No Selection",
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String username = (String) UserAccountTable.getValueAt(selectedRow, 0);
+
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+            "Are you sure you want to delete the user account: " + username + "?",
+            "Confirm Delete",
+            javax.swing.JOptionPane.YES_NO_OPTION);
+
+        if (confirm != javax.swing.JOptionPane.YES_OPTION) return;
+
+        java.util.Iterator<UserAccount> iterator = business.getUserAccountDirectory().getUserAccountList().iterator();
+        boolean found = false;
+
+        while (iterator.hasNext()) {
+            UserAccount ua = iterator.next();
+            if (ua.getUserLoginName().equalsIgnoreCase(username)) {
+                iterator.remove();
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "User account '" + username + "' deleted successfully!");
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Error: Could not find matching UserAccount in directory.",
+                "Delete Failed",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+
+        selecteduseraccount = null;
+        refreshTable();
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        CardSequencePanel.remove(this);
+        ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
+        //       ((java.awt.CardLayout)CardSequencePanel.getLayout()).show(CardSequencePanel, "IdentifyEventTypes");
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+        if (selecteduseraccount == null) return;
+
+        AdminUserAccount panel = new AdminUserAccount(business, selecteduseraccount, CardSequencePanel, this);
+        CardSequencePanel.add("AdminUserAccountPanel", panel);
+        ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void UserAccountTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserAccountTableMousePressed
+        // Extracts the row (uaser account) in the table that is selected by the user
+        int selectedRow = UserAccountTable.getSelectedRow();
+        if (selectedRow < 0) return;
+
+        String username = (String) UserAccountTable.getValueAt(selectedRow, 0);
+
+        for (UserAccount ua : business.getUserAccountDirectory().getUserAccountList()) {
+            if (ua.getUserLoginName().equals(username)) {
+                selecteduseraccount = ua;
+                break;
+
+            }
+        }
+    }//GEN-LAST:event_UserAccountTableMousePressed
+
+    private void btnNewCourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewCourseActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnNewCourseActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable UserAccountTable;
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnNewCourse;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblTableTitle;
+    private javax.swing.JLabel lblTitle;
     // End of variables declaration//GEN-END:variables
 }

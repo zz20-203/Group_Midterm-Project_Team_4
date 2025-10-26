@@ -7,7 +7,7 @@ package UserInterface.WorkAreas.FacultyRole;
 
 /**
  *
- * @author Luciela us Biktria
+ * @author Jerry Xu
  */
 public class MyProfileFacultyJPanel extends javax.swing.JPanel {
 
@@ -26,6 +26,8 @@ public class MyProfileFacultyJPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
+        setPreferredSize(new java.awt.Dimension(640, 480));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
