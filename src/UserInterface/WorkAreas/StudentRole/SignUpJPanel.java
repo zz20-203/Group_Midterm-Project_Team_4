@@ -262,13 +262,9 @@ public class SignUpJPanel extends javax.swing.JPanel {
         }
 
     private void goBackToLogin() {
-        
-        java.awt.Container top = mainWorkArea.getTopLevelAncestor();
-            if (top instanceof ProfileWorkAreaMainFrame) {
-                ((ProfileWorkAreaMainFrame) top).clearLoginFields();
-            }
-            CardLayout cl = (CardLayout) mainWorkArea.getLayout();
-            cl.show(mainWorkArea,"HOME");
-    }
+    // CHANGE: just go back one card in the right-side stack
+        CardLayout cl = (CardLayout) mainWorkArea.getLayout();
+        cl.previous(mainWorkArea);
+        }
     }
         

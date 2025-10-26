@@ -12,8 +12,8 @@ import java.awt.CardLayout;
 
 public class StudentWorkAreaJPanel extends javax.swing.JPanel {
 
-    private final JPanel workArea; 
-    private final Department dept; 
+    private final javax.swing.JPanel workArea;
+    private final info5100.university.example.Department.Department dept;
     private final String personId;
     private final String homeCard;
 
@@ -24,14 +24,15 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
      * @param clp
      */
 
-    public StudentWorkAreaJPanel(JPanel workArea, String personId, Department dept, String homeCard) {
+    public StudentWorkAreaJPanel(javax.swing.JPanel workArea,
+                             info5100.university.example.Department.Department dept,
+                             String personId,
+                             String homeCard) {
         this.workArea = workArea;
         this.dept = dept;
         this.personId = personId;
         this.homeCard = homeCard;
         initComponents();
-
-
     }
 
     /**
@@ -164,8 +165,9 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCourseWorkIdentifyResourceAssetsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCourseWorkIdentifyResourceAssetsActionPerformed
-        CourseWorkJPanel p = new CourseWorkJPanel(workArea, dept, personId, homeCard);
-        ((CardLayout) workArea.getLayout()).show(workArea, "coursework");
+        CourseWorkJPanel p = new CourseWorkJPanel(workArea, dept, personId, homeCard); // pass it
+        workArea.add("courseWork", p);
+        ((java.awt.CardLayout) workArea.getLayout()).show(workArea, "courseWork");
 
     }//GEN-LAST:event_btnCourseWorkIdentifyResourceAssetsActionPerformed
 
@@ -173,7 +175,7 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
         String name = "StudentMyProfile";
         StudentProfile sp = getOrCreateModelStudent();
-        StudentMyProfileJPanel panel = new StudentMyProfileJPanel(sp,workArea,dept); 
+        StudentMyProfileJPanel panel = new StudentMyProfileJPanel(sp, workArea, dept, homeCard);
         workArea.add(name, panel);
         ((CardLayout) workArea.getLayout()).show(workArea, name);
 
@@ -181,27 +183,26 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
 
     private void btnGraduationAuditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGraduationAuditActionPerformed
         // TODO add your handling code here:
-        String name = "Graduat Audit";
-        GraduationAuditJPanel ga = new GraduationAuditJPanel(workArea, dept, personId);
-        workArea.add(name, ga);
-        ((java.awt.CardLayout) workArea.getLayout()).show(workArea, name);
+        GraduationAuditJPanel p = new GraduationAuditJPanel(workArea, dept, personId, homeCard);
+        workArea.add("audit", p);
+        ((java.awt.CardLayout) workArea.getLayout()).show(workArea, "audit");
 
 
     }//GEN-LAST:event_btnGraduationAuditActionPerformed
 
     private void btnRegistrationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrationActionPerformed
         // TODO add your handling code here:
-        StudentRegistrationJPanel p = new StudentRegistrationJPanel(workArea, dept, personId);
-        workArea.add("studentReg", p);
-        ((CardLayout) workArea.getLayout()).show(workArea, "studentReg");
+        StudentRegistrationJPanel p = new StudentRegistrationJPanel(workArea, dept, personId, homeCard);
+        workArea.add("registration", p);
+        ((java.awt.CardLayout) workArea.getLayout()).show(workArea, "registration");
 
 }//GEN-LAST:event_btnRegistrationActionPerformed
 
     private void btnTranscriptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTranscriptActionPerformed
         // TODO add your handling code here:
-        TranscriptJPanel tp = new TranscriptJPanel(workArea, dept, personId, null /* default */);
+        TranscriptJPanel tp = new TranscriptJPanel(workArea, dept, personId, null, homeCard);
         workArea.add("transcript", tp);
-        ((CardLayout) workArea.getLayout()).show(workArea, "transcript");
+        ((java.awt.CardLayout) workArea.getLayout()).show(workArea, "transcript");
     }//GEN-LAST:event_btnTranscriptActionPerformed
 
 

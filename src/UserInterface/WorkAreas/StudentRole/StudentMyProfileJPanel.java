@@ -15,12 +15,14 @@ public class StudentMyProfileJPanel extends javax.swing.JPanel {
     
     private final JPanel main;
     private final Department dept;
-    private final StudentProfile profile; 
+    private final StudentProfile profile;
+    private final String homeCard;
 
-    public StudentMyProfileJPanel(StudentProfile profile, JPanel main, Department dept) {
+    public StudentMyProfileJPanel(StudentProfile profile, JPanel main, Department dept, String homeCard) {
         this.profile = profile;
         this.dept = dept;
         this.main = main;
+        this.homeCard = homeCard;
         initComponents();
         
         //populate the field to MyProfile
@@ -177,8 +179,8 @@ public class StudentMyProfileJPanel extends javax.swing.JPanel {
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-         if (main != null) {
-            ((java.awt.CardLayout) main.getLayout()).previous(main);
+         if (main != null && homeCard != null) {
+        ((java.awt.CardLayout) main.getLayout()).show(main, homeCard);
         }
     }//GEN-LAST:event_btnBackActionPerformed
 
