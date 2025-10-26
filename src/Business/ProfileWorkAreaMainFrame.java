@@ -48,7 +48,7 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         
         dept = business.getModelDepartment();
         if (dept == null) {
-            dept = new info5100.university.example.Department.Department("Information System");
+            dept = new info5100.university.example.Department.Department("Information Systems");
             business.setModelDepartment(dept);
         }
 
@@ -57,9 +57,9 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         
         CourseCatalog cc = dept.getCourseCatalog();
         
-        Course c5100 = cc.newCourse("INFO5100","Application Engineering & Development",4);
-        Course c6150 = cc.newCourse("INFO6150","Web Design & UX",4);
-        Course c6205 = cc.newCourse("INFO6205","Program Structure & Algorithms",4);
+        Course c5100 = cc.newCourse("Test Course","TEST1000",2);
+        Course c6150 = cc.newCourse("Web Design & UX","INFO6150",4);
+        Course c6205 = cc.newCourse("Program Structure & Algorithms","INFO6205",4);
 
         CourseSchedule fall = dept.newCourseSchedule("Fall2025");
         fall.newCourseOffer(c5100.getCourseNumber()).generatSeats(30);

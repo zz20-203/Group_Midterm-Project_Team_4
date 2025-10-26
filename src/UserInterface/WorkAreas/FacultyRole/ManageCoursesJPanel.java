@@ -6,7 +6,10 @@ package UserInterface.WorkAreas.FacultyRole;
 
 import Business.Business;
 import info5100.university.example.CourseCatalog.Course;
+import info5100.university.example.CourseSchedule.CourseOffer;
+import info5100.university.example.CourseSchedule.CourseSchedule;
 import info5100.university.example.Department.Department;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
@@ -177,9 +180,10 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
         }
 
         String courseNumber = (String) tblCourse.getValueAt(selectedRow, 0);
+        String courseName = (String) tblCourse.getValueAt(selectedRow, 1);
 
         int confirm = JOptionPane.showConfirmDialog(this,
-            "Are you sure you want to delete the course '" + courseNumber + "'?",
+            "Are you sure you want to delete '" + courseName + "'?\nThis will also remove all its course offerings in every semester.",
             "Confirm Delete",
             JOptionPane.YES_NO_OPTION);
 
@@ -187,11 +191,25 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
             return;
         }
 
+        // Delete associated objects too
+        int offersDeletedCount = 0;
+        // Use the new getter to access all schedules
+        for (CourseSchedule schedule : department.getMastercoursecatalog().values()) {
+            List<CourseOffer> offers = schedule.getCourseOfferList();
+            // Use removeIf for safe removal while iterating
+            boolean removed = offers.removeIf(offer -> offer.getCourseNumber().equals(courseNumber));
+            if(removed) {
+                offersDeletedCount++;
+            }
+        }
+
+        // Delete the course from the main catalog
         Course courseToDelete = department.getCourseCatalog().getCourseByNumber(courseNumber);
         if (courseToDelete != null) {
             department.getCourseCatalog().getCourseList().remove(courseToDelete);
             JOptionPane.showMessageDialog(this,
-                "Course '" + courseNumber + "' has been deleted successfully.");
+                "Course '" + courseName + "' deleted successfully.\n" +
+                offersDeletedCount + " associated course offering(s) were also removed.");
             populateTable(); // Refresh the table
         } else {
              JOptionPane.showMessageDialog(this,
