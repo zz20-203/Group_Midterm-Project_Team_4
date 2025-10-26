@@ -4,19 +4,52 @@
  */
 package UserInterface.WorkAreas.FacultyRole;
 
+import Business.Business;
+import Business.Person.Person;
+import Business.Profiles.StudentProfile;
+import Business.UserAccounts.UserAccount;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Jerry Xu
  */
 public class ManageStudentProfilesJPanel extends javax.swing.JPanel {
+    
+    private Business business;
+    private JPanel CardSequencePanel;
+    private UserAccount selectedStudentAccount;
 
     /**
      * Creates new form ManageStudenProfilesJPanel
      */
-    public ManageStudentProfilesJPanel() {
+    public ManageStudentProfilesJPanel(Business b, JPanel clp) {
         initComponents();
+        this.business = b;
+        this.CardSequencePanel = clp;
+        populateTable();
+    }
+    
+    private void populateTable() {
+        DefaultTableModel model = (DefaultTableModel) tblStudents.getModel();
+        model.setRowCount(0); // Clear the table
+        selectedStudentAccount = null; // Reset selection
+        
+        for (UserAccount ua : business.getUserAccountDirectory().getUserAccountList()) {
+            if (ua.getAssociatedPersonProfile() instanceof StudentProfile) {
+                Person person = ua.getAssociatedPersonProfile().getPerson();
+                
+                Object[] row = new Object[4];
+                row[0] = person.getLastName();
+                row[1] = person.getFirstName();
+                row[2] = person.getPersonId();
+                row[3] = ua.getUserLoginName();
+                
+                model.addRow(row);
+            }
+        }
     }
 
     /**
@@ -51,6 +84,11 @@ public class ManageStudentProfilesJPanel extends javax.swing.JPanel {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tblStudents.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblStudentsMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tblStudents);
@@ -120,16 +158,32 @@ public class ManageStudentProfilesJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        if (selectedCourse == null) {
-            JOptionPane.showMessageDialog(this, "Please select a course from the table to view/edit.", "No Selection", JOptionPane.WARNING_MESSAGE);
+        if (selectedStudentAccount == null) {
+            JOptionPane.showMessageDialog(this, "Please select a student from the table to view.", "No Selection", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // The 'false' flag indicates we are in "Edit Mode"
-        EditCourseJPanel editPanel = new EditCourseJPanel(CardSequencePanel, business, selectedCourse, this, false);
-        CardSequencePanel.add("EditCourseJPanel", editPanel);
-        ((java.awt.CardLayout) CardSequencePanel.getLayout()).show(CardSequencePanel, "EditCourseJPanel");
+        ViewStudentProfileJPanel viewPanel = new ViewStudentProfileJPanel(CardSequencePanel, business, selectedStudentAccount);
+        CardSequencePanel.add("ViewStudentProfileJPanel", viewPanel);
+        ((java.awt.CardLayout) CardSequencePanel.getLayout()).show(CardSequencePanel, "ViewStudentProfileJPanel");
     }//GEN-LAST:event_btnEditActionPerformed
+
+    private void tblStudentsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblStudentsMouseClicked
+        int selectedRow = tblStudents.getSelectedRow();
+        if (selectedRow < 0) {
+            return;
+        }
+
+        String nuid = (String) tblStudents.getValueAt(selectedRow, 2);
+        
+        // Find the UserAccount corresponding to the selected NUID
+        for (UserAccount ua : business.getUserAccountDirectory().getUserAccountList()) {
+            if (ua.getAssociatedPersonProfile().getPerson().getPersonId().equals(nuid)) {
+                selectedStudentAccount = ua;
+                break;
+            }
+        }
+    }//GEN-LAST:event_tblStudentsMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
