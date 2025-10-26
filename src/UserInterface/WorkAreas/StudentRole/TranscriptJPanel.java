@@ -21,32 +21,28 @@ public class TranscriptJPanel extends javax.swing.JPanel {
     private final JPanel main;
     private final Department dept;
     private final String personId;
-    private String semester; 
-    private final String homeCard;
+    private String semester;  
 
     /**
      * Creates new form TranscriptJPanel
      */
-    public TranscriptJPanel(JPanel main, Department dept, String personId, String semester, String homeCard) {
+    public TranscriptJPanel(JPanel main, Department dept, String personId, String semester) {
         this.main = main;
         this.dept = dept;
         this.personId = personId;
         this.semester = semester;
-        this.homeCard = homeCard;
         
         initComponents();
         
         txtCurrentGpa.setEditable(false);
         
+        // show just the chosen semester
         cmbSemester.removeAllItems();
-        if (semester != null && !semester.isBlank()) {
-            cmbSemester.addItem(semester);
-            cmbSemester.setSelectedIndex(0);
-        }
+        if (semester != null) cmbSemester.addItem(semester);
+        if (cmbSemester.getItemCount() > 0) cmbSemester.setSelectedIndex(0);
 
-        txtCurrentGpa.setEditable(false);
         loadTable();
-        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -105,8 +101,6 @@ public class TranscriptJPanel extends javax.swing.JPanel {
 
         lblGpa.setText("GPA");
 
-        txtCurrentGpa.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-
         lblTranscriptDetails.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         lblTranscriptDetails.setText("Transcript Details");
 
@@ -151,7 +145,7 @@ public class TranscriptJPanel extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnBack)
-                .addContainerGap(166, Short.MAX_VALUE))
+                .addContainerGap(162, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -162,7 +156,7 @@ public class TranscriptJPanel extends javax.swing.JPanel {
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        ((CardLayout) main.getLayout()).show(main, homeCard);
+        ((CardLayout) main.getLayout()).previous(main);
         
     }//GEN-LAST:event_btnBackActionPerformed
 

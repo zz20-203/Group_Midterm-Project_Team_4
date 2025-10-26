@@ -6,8 +6,16 @@
 package UserInterface.WorkAreas.AdminRole.ManagePersonnelWorkResp;
 
 import Business.Business;
-
-import javax.swing.JPanel;
+import Business.Person.Person;
+import Business.Profiles.EmployeeProfile;
+import Business.Profiles.FacultyProfile;
+import Business.Profiles.StudentProfile;
+import Business.UserAccounts.UserAccount;
+import UserInterface.WorkAreas.AdminRole.AdministerUserAccountsWorkResp.AdminUserAccount;
+import UserInterface.WorkAreas.AdminRole.ManageFacultyJPanel;
+import UserInterface.WorkAreas.AdminRole.ManageStudentsJPanel;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  *
@@ -19,17 +27,63 @@ public class AdministerPersonJPanel extends javax.swing.JPanel {
      * Creates new form ManageSuppliersJPanel
      */
     JPanel CardSequencePanel;
-
+    JPanel parentPanel;
+    UserAccount userAccount; 
     Business business;
+   
 
-    public AdministerPersonJPanel(Business bz, JPanel jp) {
-
-        CardSequencePanel = jp;
+    public AdministerPersonJPanel(Business bz, JPanel jp, UserAccount ua, JPanel parentPanel) {
         this.business = bz;
+        this.CardSequencePanel = jp;
+        this.userAccount = ua;
+        this.parentPanel = parentPanel; 
         initComponents();
+        
+        if (userAccount != null) {  
+            populateFields();  
 
+            
+            txtNUID.setEditable(false);
+            cmbRole.setEnabled(false);
 
+            
+            Update.setEnabled(true);
+            Register.setEnabled(false);
+        } else {
+            
+            txtNUID.setEditable(true);
+            cmbRole.setEnabled(true);
+
+            Update.setEnabled(false);
+            Register.setEnabled(true);
+        }
+        if (userAccount != null) {
+            populateFields(); // 
+        }
     }
+        private void populateFields() {
+        txtUsername.setText(userAccount.getUserLoginName());
+        txtPassword.setText(userAccount.getPassword());
+
+        if (userAccount.getAssociatedPersonProfile() != null) {
+            Person p = userAccount.getAssociatedPersonProfile().getPerson();
+            if (p != null) {
+                txtNUID.setText(p.getPersonId());
+                txtName.setText(p.getName());
+            }
+
+           
+            if (userAccount.getAssociatedPersonProfile() instanceof StudentProfile)
+                cmbRole.setSelectedItem("Student");
+            else if (userAccount.getAssociatedPersonProfile() instanceof FacultyProfile)
+                cmbRole.setSelectedItem("Faculty");
+            else if (userAccount.getAssociatedPersonProfile() instanceof EmployeeProfile)
+                cmbRole.setSelectedItem("Employee");
+            else
+                cmbRole.setSelectedIndex(0);
+        }
+    }
+
 
     public void refreshTable() {
 
@@ -46,6 +100,20 @@ public class AdministerPersonJPanel extends javax.swing.JPanel {
 
         Back = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        Update = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        txtName = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        txtUsername = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtPassword = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtNUID = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        cmbRole = new javax.swing.JComboBox<>();
+        Register = new javax.swing.JButton();
+        cmbStatus = new javax.swing.JComboBox<>();
 
         setBackground(new java.awt.Color(0, 153, 153));
         setLayout(null);
@@ -57,26 +125,259 @@ public class AdministerPersonJPanel extends javax.swing.JPanel {
             }
         });
         add(Back);
-        Back.setBounds(30, 290, 76, 32);
+        Back.setBounds(50, 350, 80, 23);
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jLabel2.setText("Manage Person Profile");
         add(jLabel2);
-        jLabel2.setBounds(21, 20, 550, 29);
+        jLabel2.setBounds(21, 20, 550, 28);
+
+        Update.setText("Update");
+        Update.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UpdateActionPerformed(evt);
+            }
+        });
+        add(Update);
+        Update.setBounds(510, 350, 80, 23);
+
+        jLabel3.setText("Name");
+        add(jLabel3);
+        jLabel3.setBounds(170, 70, 35, 17);
+
+        txtName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNameActionPerformed(evt);
+            }
+        });
+        add(txtName);
+        txtName.setBounds(290, 70, 120, 23);
+
+        jLabel4.setText("Role");
+        add(jLabel4);
+        jLabel4.setBounds(170, 110, 26, 17);
+
+        jLabel5.setText("Username");
+        add(jLabel5);
+        jLabel5.setBounds(170, 150, 59, 17);
+
+        txtUsername.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtUsernameActionPerformed(evt);
+            }
+        });
+        add(txtUsername);
+        txtUsername.setBounds(290, 150, 120, 23);
+
+        jLabel6.setText("Password");
+        add(jLabel6);
+        jLabel6.setBounds(170, 190, 56, 17);
+
+        txtPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPasswordActionPerformed(evt);
+            }
+        });
+        add(txtPassword);
+        txtPassword.setBounds(290, 190, 120, 23);
+
+        jLabel7.setText("NUID");
+        add(jLabel7);
+        jLabel7.setBounds(170, 230, 32, 17);
+
+        txtNUID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNUIDActionPerformed(evt);
+            }
+        });
+        add(txtNUID);
+        txtNUID.setBounds(290, 230, 120, 23);
+
+        jLabel8.setText("Status");
+        add(jLabel8);
+        jLabel8.setBounds(170, 270, 50, 17);
+
+        cmbRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Employee", "Faculty", "Student" }));
+        cmbRole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbRoleActionPerformed(evt);
+            }
+        });
+        add(cmbRole);
+        cmbRole.setBounds(290, 110, 120, 23);
+
+        Register.setText("Register");
+        Register.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RegisterActionPerformed(evt);
+            }
+        });
+        add(Register);
+        Register.setBounds(300, 350, 80, 23);
+
+        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Active", "Pending", "Inactive" }));
+        add(cmbStatus);
+        cmbStatus.setBounds(290, 270, 120, 23);
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
         // TODO add your handling code here:
+        
+        if (parentPanel != null) {
+            if (parentPanel instanceof ManageFacultyJPanel) {
+                ((ManageFacultyJPanel) parentPanel).refreshTable();
+            } else if (parentPanel instanceof ManageStudentsJPanel) {
+                ((ManageStudentsJPanel) parentPanel).refreshTable();
+            } else if (parentPanel instanceof ManagePersonsJPanel) {
+                ((ManagePersonsJPanel) parentPanel).refreshTable();
+            }
+        }
+
         CardSequencePanel.remove(this);
-        ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
-
-
+        CardLayout layout = (CardLayout) CardSequencePanel.getLayout();
+        layout.previous(CardSequencePanel);
+    
     }//GEN-LAST:event_BackActionPerformed
+
+    private void UpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateActionPerformed
+        // TODO add your handling code here:
+
+        if (userAccount == null) return;
+
+        userAccount.setUserLoginName(txtUsername.getText());
+        userAccount.setPassword(txtPassword.getText());
+
+        if (userAccount.getAssociatedPersonProfile() != null) {
+            Person p = userAccount.getAssociatedPersonProfile().getPerson();
+            if (p != null) p.setName(txtName.getText());
+        }
+
+        JOptionPane.showMessageDialog(this, "User information updated successfully!");
+
+      
+        if (parentPanel != null) {
+            if (parentPanel instanceof AdminUserAccount) {
+                ((AdminUserAccount) parentPanel).refreshUI(); 
+            } else if (parentPanel instanceof ManageFacultyJPanel) {
+                ((ManageFacultyJPanel) parentPanel).refreshTable();
+            } else if (parentPanel instanceof ManageStudentsJPanel) {
+                ((ManageStudentsJPanel) parentPanel).refreshTable();
+            } else if (parentPanel instanceof ManagePersonsJPanel) {
+                ((ManagePersonsJPanel) parentPanel).refreshTable();
+            }
+        }
+
+       
+        CardLayout layout = (CardLayout) CardSequencePanel.getLayout();
+        CardSequencePanel.remove(this);
+        layout.previous(CardSequencePanel);
+    
+
+    }//GEN-LAST:event_UpdateActionPerformed
+
+    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNameActionPerformed
+
+    private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtUsernameActionPerformed
+
+    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPasswordActionPerformed
+
+    private void txtNUIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNUIDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNUIDActionPerformed
+
+    private void cmbRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbRoleActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbRoleActionPerformed
+
+    private void RegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegisterActionPerformed
+        // TODO add your handling code here:
+        String nuid = txtNUID.getText().trim();
+        String role = (String) cmbRole.getSelectedItem();
+
+        if (nuid.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "NUID is required.");
+            return;
+        }
+
+        if (role == null || role.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please select a role.");
+            return;
+        }
+
+        Person existing = business.getPersonDirectory().findPerson(nuid);
+        if (existing != null) {
+            JOptionPane.showMessageDialog(this, "This NUID already exists!");
+            return;
+        }
+
+        Person p = business.getPersonDirectory().newPerson(nuid);
+        p.setName("(Unregistered Student)");
+
+        switch (role) {
+            case "Student":
+            business.getStudentDirectory().newStudentProfile(p);
+            cmbStatus.setSelectedItem("Pending");
+            JOptionPane.showMessageDialog(this,
+                "Student NUID created successfully!\n\nNUID: " + nuid +
+                "\nStatus: Pending\n\nThe student can now use this NUID to sign up.");
+            break;
+            case "Faculty":
+
+            Person f = business.getPersonDirectory().newPerson(nuid);
+            f.setName(txtName.getText());
+            FacultyProfile fp = business.getFacultyDirectory().newFacultyProfile(f);
+
+            business.getUserAccountDirectory().newUserAccount(fp, txtUsername.getText(), txtPassword.getText());
+
+            cmbStatus.setSelectedItem("Active");
+            JOptionPane.showMessageDialog(this, "Faculty account created successfully!");
+            break;
+
+            case "Employee":
+            // Create Person & Employee Profile
+            Person e = business.getPersonDirectory().newPerson(nuid);
+            e.setName(txtName.getText());
+            EmployeeProfile ep = business.getEmployeeDirectory().newEmployeeProfile(e);
+
+            // Create UserAccount
+            business.getUserAccountDirectory().newUserAccount(ep, txtUsername.getText(), txtPassword.getText());
+
+            cmbStatus.setSelectedItem("Active");
+            JOptionPane.showMessageDialog(this, "Employee account created successfully!");
+            break;
+        }
+
+        txtNUID.setText("");
+        txtName.setText("");
+        txtUsername.setText("");
+        txtPassword.setText("");
+
+    }//GEN-LAST:event_RegisterActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Back;
+    private javax.swing.JButton Register;
+    private javax.swing.JButton Update;
+    private javax.swing.JComboBox<String> cmbRole;
+    private javax.swing.JComboBox<String> cmbStatus;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JTextField txtNUID;
+    private javax.swing.JTextField txtName;
+    private javax.swing.JTextField txtPassword;
+    private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 
 }
