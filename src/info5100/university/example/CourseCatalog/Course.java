@@ -25,7 +25,6 @@ public class Course {
 
     public int getCoursePrice() {
         return price * credits;
-
     }
 
     public int getCredits() {
@@ -37,4 +36,15 @@ public class Course {
         return name;
     }
     
+    public void setCourseNumber(String number) {
+        this.number = number;
+    }
+
+    public void setCourseName(String name) {
+        this.name = name;
+    }
+
+    public void setCredits(int credits) {
+        this.credits = credits;
+    }
 }
