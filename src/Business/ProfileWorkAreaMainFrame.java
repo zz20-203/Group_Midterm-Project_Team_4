@@ -39,6 +39,7 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
      * Creates new form PricingMainFrame
      */
     public static final String HOME_CARD = "studentHome";
+    private static final String SIGNUP_CARD = "signup";
 
     public ProfileWorkAreaMainFrame() {
         initComponents();
@@ -146,9 +147,8 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
                     .addComponent(UserNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
                     .addComponent(jLabel2)
                     .addComponent(PasswordTextField)
-                    .addGroup(actionsidejpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(btnLogin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
-                        .addComponent(btnSignUp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                    .addComponent(btnSignUp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         actionsidejpanelLayout.setVerticalGroup(
             actionsidejpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -241,8 +241,10 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
     private void btnSignUpLoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignUpLoginButtonActionPerformed
         // TODO add your handling code here:
         SignUpJPanel p = new SignUpJPanel(CardSequencePanel, business, dept);
-        CardSequencePanel.add("signup", p);
-        ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
+
+        CardSequencePanel.add(SIGNUP_CARD, p); 
+        CardLayout cl = (CardLayout) CardSequencePanel.getLayout();
+        cl.show(CardSequencePanel, SIGNUP_CARD);
     }//GEN-LAST:event_btnSignUpLoginButtonActionPerformed
 
     private void UserNameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserNameTextFieldActionPerformed
