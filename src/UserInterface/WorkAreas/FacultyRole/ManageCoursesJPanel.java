@@ -33,6 +33,12 @@ public class ManageCoursesJPanel extends javax.swing.JPanel {
         this.business = b;
         this.CardSequencePanel = clp;
         populateTable();
+        
+        tblCourse.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblCourseMouseClicked(evt);
+            }
+        });
     }
 
     public void populateTable() {
