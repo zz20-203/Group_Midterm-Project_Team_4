@@ -63,7 +63,7 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         DemoSeeder.seedStudent(business, dept);
         
         CourseCatalog cc = dept.getCourseCatalog();
-        Course c5100 = cc.newCourse("Application Engineering & Development", "INFO5100", 4);
+        Course c5100 = cc.newCourse("Test Course", "TEST0000", 4);
         Course c6150 = cc.newCourse("Web Design & UX", "INFO6150", 4);
         Course c6205 = cc.newCourse("Program Structure & Algorithms", "INFO6205", 4);
 
