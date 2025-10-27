@@ -173,6 +173,9 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
 
     private void btnPerformanceReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPerformanceReportsActionPerformed
         // TODO add your handling code here:
+        SelectCourseForReportJPanel selectPanel = new SelectCourseForReportJPanel(CardSequencePanel, business, userAccount);
+        CardSequencePanel.add("SelectCourseForReportJPanel", selectPanel);
+        ((java.awt.CardLayout) CardSequencePanel.getLayout()).show(CardSequencePanel, "SelectCourseForReportJPanel");
 
     }//GEN-LAST:event_btnPerformanceReportsActionPerformed
 

@@ -38,7 +38,11 @@ public class FacultyProfile {
         return sum/(facultyassignments.size()*1.0); //this ensure we have double/double
         
     }
-
+    
+    public Person getPerson() {
+        return person;
+    }
+    
     public FacultyAssignment AssignAsTeacher(CourseOffer co){
         
         FacultyAssignment fa = new FacultyAssignment(this, co);

@@ -23,6 +23,9 @@ public class CourseOffer {
     }
 
     public FacultyProfile getFacultyProfile() {
+        if (facultyassignment == null) {
+            return null;
+        }
         return facultyassignment.getFacultyProfile();
     }
 
