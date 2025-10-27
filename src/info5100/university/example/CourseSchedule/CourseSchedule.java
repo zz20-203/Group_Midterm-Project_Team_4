@@ -12,6 +12,14 @@ public class CourseSchedule {
     ArrayList<CourseOffer> schedule;
     String semester;
 
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
+
     public CourseSchedule(String s, CourseCatalog cc) {
         semester = s;
         coursecatalog = cc;

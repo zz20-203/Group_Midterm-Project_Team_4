@@ -14,6 +14,30 @@ public class Seat {
         occupied = false;
         
     }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public SeatAssignment getSeatAssignment() {
+        return seatassignment;
+    }
+
+    public void setSeatAssignment(SeatAssignment seatassignment) {
+        this.seatassignment = seatassignment;
+    }
+
+    public CourseOffer getCourseoffer() {
+        return courseoffer;
+    }
+
+    public void setCourseoffer(CourseOffer courseoffer) {
+        this.courseoffer = courseoffer;
+    }
     
     public Boolean isOccupied(){
         return occupied;

@@ -45,7 +45,7 @@ public class ManageStudentProfilesJPanel extends javax.swing.JPanel {
                 row[0] = person.getLastName();
                 row[1] = person.getFirstName();
                 row[2] = person.getPersonId();
-                row[3] = ua.getUserLoginName();
+                row[3] = person.getEmail();
                 
                 model.addRow(row);
             }

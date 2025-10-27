@@ -1,6 +1,7 @@
 
 package info5100.university.example.CourseSchedule;
 
+import info5100.university.example.Persona.StudentProfile;
 import java.util.ArrayList;
 
 /**
@@ -10,6 +11,15 @@ import java.util.ArrayList;
 public class CourseLoad {
     String semester;
     ArrayList<SeatAssignment> seatassignments;
+    private StudentProfile studentProfile;
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
     
     public CourseLoad(String s){
         seatassignments = new ArrayList();
@@ -22,6 +32,14 @@ public class CourseLoad {
         SeatAssignment sa = seat.newSeatAssignment(this);
         seatassignments.add(sa);  //add to students course 
         return sa;
+    }
+    
+    public void setStudentProfile(StudentProfile sp) {
+        this.studentProfile = sp;
+    }
+
+    public StudentProfile getStudentProfile() {
+        return studentProfile;
     }
     
     public void registerStudent(SeatAssignment sa){

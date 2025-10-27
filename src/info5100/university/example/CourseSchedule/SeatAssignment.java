@@ -12,6 +12,14 @@ public class SeatAssignment {
         seat = s;
         courseload = cl;
     }
+
+    public CourseLoad getCourseLoad() {
+        return courseload;
+    }
+
+    public void setCourseLoad(CourseLoad courseload) {
+        this.courseload = courseload;
+    }
      
     public boolean getLike(){
         return like;
@@ -22,8 +30,10 @@ public class SeatAssignment {
     }
     
     public String getGrade() {
-    return pointsToLetter(this.grade);
+        return pointsToLetter(this.grade);
     }
+    
+    
     
     public void assignGrade(String letter) {
         setGrade(letter);

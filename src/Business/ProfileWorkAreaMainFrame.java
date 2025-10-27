@@ -5,6 +5,7 @@
  */
 package Business;
 
+import Business.Person.Person;
 import Business.Profiles.EmployeeProfile;
 import Business.Profiles.FacultyProfile;
 import Business.Profiles.Profile;
@@ -17,12 +18,15 @@ import Business.UserAccounts.UserAccountDirectory;
 import info5100.university.example.Department.Department;
 import info5100.university.example.CourseCatalog.CourseCatalog;
 import info5100.university.example.CourseCatalog.Course;
+import info5100.university.example.CourseSchedule.CourseOffer;
 import info5100.university.example.CourseSchedule.CourseSchedule;
 
 import UserInterface.WorkAreas.AdminRole.AdminRoleWorkAreaJPanel;
 import UserInterface.WorkAreas.FacultyRole.FacultyWorkAreaJPanel;
 import UserInterface.WorkAreas.StudentRole.SignUpJPanel;
 import UserInterface.WorkAreas.StudentRole.StudentWorkAreaJPanel;
+import info5100.university.example.CourseSchedule.CourseLoad;
+import info5100.university.example.CourseSchedule.SeatAssignment;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -48,29 +52,125 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
         
         dept = business.getDepartmentList().findDepartment("Information Systems");
         if (dept == null) {
-//            dept = new info5100.university.example.Department.Department("Information Systems");
-            dept = business.getDepartmentList().newDepartment("Information Systems");
+            dept = business.getDepartmentList().newDepartment("Information System");
             business.getDepartmentList().newDepartment("Mathematics");
             business.getDepartmentList().newDepartment("Philosophy");
-            business.setModelDepartment(dept);
         }
+
+        business.setModelDepartment(dept);
 
         // Seed one demo student + model data
         DemoSeeder.seedStudent(business, dept);
         
         CourseCatalog cc = dept.getCourseCatalog();
-        
-        Course c5100 = cc.newCourse("Test Course","TEST1000",2);
-        Course c6150 = cc.newCourse("Web Design & UX","INFO6150",4);
-        Course c6205 = cc.newCourse("Program Structure & Algorithms","INFO6205",4);
+        Course c5100 = cc.newCourse("Application Engineering & Development", "INFO5100", 4);
+        Course c6150 = cc.newCourse("Web Design & UX", "INFO6150", 4);
+        Course c6205 = cc.newCourse("Program Structure & Algorithms", "INFO6205", 4);
 
+        // --- Schedule and Offering Creation ---
         CourseSchedule fall = dept.newCourseSchedule("Fall2025");
-        fall.newCourseOffer(c5100.getCourseNumber()).generatSeats(30);
+        CourseOffer fall5100Offer = fall.newCourseOffer(c5100.getCourseNumber());
+        fall5100Offer.generatSeats(30);
         fall.newCourseOffer(c6150.getCourseNumber()).generatSeats(30);
 
         CourseSchedule spring = dept.newCourseSchedule("Spring2026");
         spring.newCourseOffer(c6205.getCourseNumber()).generatSeats(30);
         spring.newCourseOffer(c5100.getCourseNumber()).generatSeats(30);
+
+        // --- FACULTY SEEDING AND ASSIGNMENT ---
+        final String facultyNuid = "1002"; // Alice Teacher's NUID from ConfigureABusiness
+        
+        // Ensure the academic-side Person and FacultyProfile exist for Alice
+        info5100.university.example.Persona.Person academicPerson = dept.getPersonDirectory().findPerson(facultyNuid);
+        if (academicPerson == null) {
+            academicPerson = dept.getPersonDirectory().newPerson(facultyNuid);
+            // We can find the business-side person to copy details if needed
+            Person businessPerson = business.getPersonDirectory().findPerson(facultyNuid);
+            if (businessPerson != null) {
+                academicPerson.setFirstName(businessPerson.getFirstName());
+                academicPerson.setLastName(businessPerson.getLastName());
+            }
+            // Create the academic faculty profile
+            dept.getFacultydirectory().newFacultyProfile(academicPerson);
+        }
+        
+        // Assign the faculty to the course offering
+        info5100.university.example.Persona.Faculty.FacultyProfile academicFacultyProfile = 
+            dept.getFacultydirectory().findTeachingFaculty(facultyNuid);
+        if (academicFacultyProfile != null) {
+            fall5100Offer.AssignAsTeacher(academicFacultyProfile);
+        }
+        
+                // --- SEED 3 STUDENTS FOR PERFORMANCE REPORT ---
+
+        // Student 1: Alice Able, Grade A+
+        final String s1_nuid = "003000001";
+        final String s1_uname = "able";
+        final String s1_passwd = "password";
+        
+        Person s1_bPerson = business.getPersonDirectory().newPerson(s1_nuid);
+        s1_bPerson.setFirstName("Alice");
+        s1_bPerson.setLastName("Able");
+        s1_bPerson.setEmail("aliceable@northeastern.edu");
+        StudentProfile s1_bProfile = business.getStudentDirectory().newStudentProfile(s1_bPerson);
+        business.getUserAccountDirectory().newUserAccount(s1_bProfile, s1_uname, s1_passwd);
+        
+        info5100.university.example.Persona.Person s1_aPerson = dept.getPersonDirectory().newPerson(s1_nuid);
+        s1_aPerson.setFirstName("Alice");
+        s1_aPerson.setLastName("Able");
+        info5100.university.example.Persona.StudentProfile s1_aProfile = dept.getStudentDirectory().newStudentProfile(s1_aPerson);
+        
+        CourseLoad s1_fallLoad = s1_aProfile.newCourseLoad("Fall2025");
+        SeatAssignment s1_sa = s1_fallLoad.newSeatAssignment(fall5100Offer);
+        if (s1_sa != null) {
+            s1_sa.setGrade("A"); 
+        }
+
+        // Student 2: Bob Baker, Grade A-
+        final String s2_nuid = "003000002";
+        final String s2_uname = "baker";
+        final String s2_passwd = "password";
+        
+        Person s2_bPerson = business.getPersonDirectory().newPerson(s2_nuid);
+        s2_bPerson.setFirstName("Bob");
+        s2_bPerson.setLastName("Baker");
+        s2_bPerson.setEmail("bob_baker@gmail.com");
+        StudentProfile s2_bProfile = business.getStudentDirectory().newStudentProfile(s2_bPerson);
+        business.getUserAccountDirectory().newUserAccount(s2_bProfile, s2_uname, s2_passwd);
+        
+        info5100.university.example.Persona.Person s2_aPerson = dept.getPersonDirectory().newPerson(s2_nuid);
+        s2_aPerson.setFirstName("Bob");
+        s2_aPerson.setLastName("Baker");
+        info5100.university.example.Persona.StudentProfile s2_aProfile = dept.getStudentDirectory().newStudentProfile(s2_aPerson);
+        
+        CourseLoad s2_fallLoad = s2_aProfile.newCourseLoad("Fall2025");
+        SeatAssignment s2_sa = s2_fallLoad.newSeatAssignment(fall5100Offer);
+        if (s2_sa != null) {
+            s2_sa.setGrade("B+"); 
+        }
+
+        // Student 3: Charles Chen, Grade C+
+        final String s3_nuid = "003000003";
+        final String s3_uname = "chen";
+        final String s3_passwd = "password";
+        
+        Person s3_bPerson = business.getPersonDirectory().newPerson(s3_nuid);
+        s3_bPerson.setFirstName("Charles");
+        s3_bPerson.setLastName("Chen");
+        s3_bPerson.setEmail("charlie18922157212@qq.com");
+        StudentProfile s3_bProfile = business.getStudentDirectory().newStudentProfile(s3_bPerson);
+        business.getUserAccountDirectory().newUserAccount(s3_bProfile, s3_uname, s3_passwd);
+        
+        info5100.university.example.Persona.Person s3_aPerson = dept.getPersonDirectory().newPerson(s3_nuid);
+        s3_aPerson.setFirstName("Charles");
+        s3_aPerson.setLastName("Chen");
+        info5100.university.example.Persona.StudentProfile s3_aProfile = dept.getStudentDirectory().newStudentProfile(s3_aPerson);
+        
+        CourseLoad s3_fallLoad = s3_aProfile.newCourseLoad("Fall2025");
+        SeatAssignment s3_sa = s3_fallLoad.newSeatAssignment(fall5100Offer);
+        if (s3_sa != null) {
+            s3_sa.setGrade("C-"); 
+        }
     }
 
     public void insert(JPanel jpanel) {
@@ -187,9 +287,6 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
-        // TODO add your handling code here:
-        //      WorkAreaJPanel ura = new WorkAreaJPanel(workareajpanl);
-
         String un = UserNameTextField.getText();
         String pw = new String(PasswordTextField.getPassword());
 
@@ -199,49 +296,34 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Invalid Username or Password.");
             return;
         }
-        StudentWorkAreaJPanel studentworkareajpanel;
+        
         FacultyWorkAreaJPanel facultyworkarea;
         AdminRoleWorkAreaJPanel adminworkarea;
-        String r = useraccount.getRole();
         Profile profile = useraccount.getAssociatedPersonProfile();
 
-
         if (profile instanceof EmployeeProfile) {
-
             adminworkarea = new AdminRoleWorkAreaJPanel(business, CardSequencePanel,useraccount);
             CardSequencePanel.removeAll();
             CardSequencePanel.add("Admin", adminworkarea);
             ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
-
         }
         
         if (profile instanceof StudentProfile) {
             String personId = useraccount.getPersonId();
-
-         // Build the student's home (menu) panel (4-arg ctor!)
-        StudentWorkAreaJPanel studentPanel =
-            new StudentWorkAreaJPanel(CardSequencePanel, dept, personId, HOME_CARD);
-
-        // No local variable here; use the class constant we defined above
-        CardSequencePanel.add(HOME_CARD, studentPanel);
-        ((CardLayout) CardSequencePanel.getLayout()).show(CardSequencePanel, HOME_CARD);
-        return;
-
+            StudentWorkAreaJPanel studentPanel = new StudentWorkAreaJPanel(CardSequencePanel, dept, personId, HOME_CARD);
+            CardSequencePanel.add(HOME_CARD, studentPanel);
+            ((CardLayout) CardSequencePanel.getLayout()).show(CardSequencePanel, HOME_CARD);
         }
 
         if (profile instanceof FacultyProfile) {
-            // Pass the logged-in user account to the faculty work area
             facultyworkarea = new FacultyWorkAreaJPanel(business, useraccount, CardSequencePanel);
             CardSequencePanel.removeAll();
             CardSequencePanel.add("faculty", facultyworkarea);
             ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
         }
-
-
     }//GEN-LAST:event_LoginButtonActionPerformed
 
     private void btnSignUpLoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignUpLoginButtonActionPerformed
-        // TODO add your handling code here:
         SignUpJPanel p = new SignUpJPanel(CardSequencePanel, business, dept);
         CardSequencePanel.add("signup", p);
         ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
@@ -302,8 +384,8 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     // End of variables declaration//GEN-END:variables
     public void clearLoginFields() {
-    UserNameTextField.setText("");
-    PasswordTextField.setText("");
-    UserNameTextField.requestFocusInWindow();
+        UserNameTextField.setText("");
+        PasswordTextField.setText("");
+        UserNameTextField.requestFocusInWindow();
     }
 }

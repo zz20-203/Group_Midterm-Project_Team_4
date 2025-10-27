@@ -42,6 +42,7 @@ public class Department {
         persondirectory = new PersonDirectory();
         degree = new Degree("MSIS");
         
+        facultydirectory = new FacultyDirectory(this);
     }
     public void addCoreCourse(Course c){
         degree.addCoreCourse(c);
@@ -51,6 +52,46 @@ public class Department {
     public void addElectiveCourse(Course c){
         degree.addElectiveCourse(c);
         
+    }
+
+    public CourseCatalog getCoursecatalog() {
+        return coursecatalog;
+    }
+
+    public void setCoursecatalog(CourseCatalog coursecatalog) {
+        this.coursecatalog = coursecatalog;
+    }
+
+    public PersonDirectory getPersondirectory() {
+        return persondirectory;
+    }
+
+    public void setPersondirectory(PersonDirectory persondirectory) {
+        this.persondirectory = persondirectory;
+    }
+
+    public StudentDirectory getStudentdirectory() {
+        return studentdirectory;
+    }
+
+    public void setStudentdirectory(StudentDirectory studentdirectory) {
+        this.studentdirectory = studentdirectory;
+    }
+
+    public FacultyDirectory getFacultydirectory() {
+        return facultydirectory;
+    }
+
+    public void setFacultydirectory(FacultyDirectory facultydirectory) {
+        this.facultydirectory = facultydirectory;
+    }
+
+    public EmployerDirectory getEmployerdirectory() {
+        return employerdirectory;
+    }
+
+    public void setEmployerdirectory(EmployerDirectory employerdirectory) {
+        this.employerdirectory = employerdirectory;
     }
 
     public String getName() {
