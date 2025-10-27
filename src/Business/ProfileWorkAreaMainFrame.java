@@ -44,7 +44,6 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
      * Creates new form PricingMainFrame
      */
     public static final String HOME_CARD = "studentHome";
-    private static final String SIGNUP_CARD = "signup";
 
     public ProfileWorkAreaMainFrame() {
         initComponents();
@@ -326,8 +325,8 @@ public class ProfileWorkAreaMainFrame extends javax.swing.JFrame {
 
     private void btnSignUpLoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignUpLoginButtonActionPerformed
         SignUpJPanel p = new SignUpJPanel(CardSequencePanel, business, dept);
-        CardSequencePanel.add(SIGNUP_CARD, p);                     
-        CardLayout cl = (CardLayout) CardSequencePanel.getLayout();    cl.show(CardSequencePanel, SIGNUP_CARD);
+        CardSequencePanel.add("signup", p);
+        ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
     }//GEN-LAST:event_btnSignUpLoginButtonActionPerformed
 
     private void UserNameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserNameTextFieldActionPerformed
